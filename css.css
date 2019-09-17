@@ -1,0 +1,50 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    background-color: #eee;
+}
+
+body{
+    font: normal 14px sans-serif;
+}
+
+
+#video-placeholder{
+    height:360px;
+    width: 640px;
+    margin: 10% auto;
+}
+
+
+
+@media (max-width: 1000px) {
+
+
+    header h1{
+        float: none;
+    }
+
+    header a{
+        margin-top: 25px;
+        float: none;
+    }
+
+}
+
+@media (max-width: 1200px) {
+
+    #video-placeholder{
+        max-width: 100%;
+        position: static;
+    }
+
+    #controls{
+        margin-right: 0;
+    }
+
+    #bsaHolder{ display:none;}
+}
