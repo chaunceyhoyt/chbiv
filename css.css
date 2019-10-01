@@ -22,7 +22,11 @@ body{
     z-index : 0;
 }
 
-
+#tv{
+    height:1093px;
+    width: 1072px;   
+    
+}
 
 @media (max-width: 1000px) {
 
