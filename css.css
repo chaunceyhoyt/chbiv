@@ -50,3 +50,5 @@ body{
 
     #bsaHolder{ display:none;}
 }
+
+.overlay {position: absolute; z-index:100;}
