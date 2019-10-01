@@ -18,7 +18,8 @@ body{
 #video-placeholder{
     height:360px;
     width: 640px;
-    margin: 10% auto;
+    position : absolute;
+    z-index : 0;
 }
 
 
