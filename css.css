@@ -18,7 +18,7 @@ body{
 #video-placeholder{
     height:471px;
     width: 840px;
-    z-index : 0;
+    z-index : 1;
 }
 
 #tv{
@@ -45,7 +45,7 @@ body{
 
     #video-placeholder{
         max-width: 100%;
-        position: static;
+        position: absolute;
     }
 
     #controls{
