@@ -24,7 +24,7 @@ body{
 #tv{
     height:1093px;
     width: 1072px;   
-    
+    margin: 0 auto;
 }
 
 @media (max-width: 1000px) {
