@@ -16,14 +16,12 @@ body{
 
 
 #video-placeholder{
-    height:471px;
-    width: 840px;
     z-index : 1;
 }
 
 #tv{
-    height:1093px;
-    width: 1072px;   
+    width: 100%;
+    max-width: 1072px;    
     margin: 0 auto;
 }
 
@@ -55,4 +53,4 @@ body{
     #bsaHolder{ display:none;}
 }
 
-.overlay {position: absolute; z-index:100;}
+#overlay {position: absolute; z-index:100;}
