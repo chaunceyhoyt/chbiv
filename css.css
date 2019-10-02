@@ -15,7 +15,7 @@ body{
 }
 
 img{
-    position: absolute;
+    
 }
 
 #video-placeholder{
@@ -23,7 +23,7 @@ img{
 }
 
 #tv{
-    position: relative;
+   
     width: 100%;
     max-width: 858px;    
     margin: 0 auto;
@@ -53,7 +53,7 @@ table {
 
     #video-placeholder{
         max-width: 100%;
-        position: absolute;
+        
     }
 
     #controls{
