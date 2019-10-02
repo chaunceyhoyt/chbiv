@@ -22,10 +22,7 @@ img{
     z-index : 1;
 }
 
-#tv{
-   
-    width: 100%;
-    max-width: 858px;    
+#tv{  width: 80%;
     margin: 0 auto;
 }
 
