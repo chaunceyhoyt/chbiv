@@ -20,7 +20,16 @@
 		<td colspan="2">
 			
 			
-		<div id="player"></div>
+<iframe id="player" type="text/html" style="z-index:1 position: absolute;" width="649" height="378"
+  src="https://www.youtube.com/embed?
+    modestbranding=1
+    &autoplay=1
+    &controls=0
+    &listType=playlist
+    &list=PLlubYCP6MorQeOAGMBv3yzmr3m1jvRaWS"
+                                              
+  frameborder="0" allow="autoplay"allowfullscreen>
+  </iframe>
 
     <script>
       // 2. This code loads the IFrame Player API code asynchronously.
@@ -37,7 +46,6 @@
         player = new YT.Player('player', {
           height: '378',
           width: '649',
-          videoId: 'M7lc1UVf-VE',
           events: {
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
