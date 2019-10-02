@@ -7,7 +7,9 @@ function onYouTubeIframeAPIReady() {
         height: 378,
         videoId: 'Xa0Q0J5tOP0',
         playerVars: {
-            color: 'white',
+            controls: "0",
+            modestbranding: "1",
+            loop:"1",
             playlist: 'taJ60kskkns,FG0fTKAqZ5g'
         },
         events: {
