@@ -1,19 +1,18 @@
 var player,
     time_update_interval = 0;
 
-function onYouTubeIframeAPIReady() {
+  function onYouTubeIframeAPIReady() {
     player = new YT.Player('video-placeholder', {
         events: {
-            'onReady': initialize
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
         }
     });
-}
+  }
 
 
 
 function initialize(){
-              player.loadPlaylist({list:PLlubYCP6MorQeOAGMBv3yzmr3m1jvRaWS,
-                     listType:playlist,);
     // Update the controls on load
     updateTimerDisplay();
     updateProgressBar();
