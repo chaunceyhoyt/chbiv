@@ -8,6 +8,7 @@ function onYouTubeIframeAPIReady() {
         videoId: '9L1hTX-_wYQ',
         playerVars: {
             controls: '0',
+            loop: '1',
             playlist: 'HlKBymW_2EA,rG1Hhtx7f28'
         },
         events: {
