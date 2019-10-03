@@ -38,6 +38,9 @@ function initialize(){
 
 
     $('#volume-input').val(Math.round(player.getVolume()));
+    
+    
+     player.playVideo();
 }
 
 
