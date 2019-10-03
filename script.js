@@ -7,6 +7,7 @@ function onYouTubeIframeAPIReady() {
         height: 378,
         videoId: '9L1hTX-_wYQ',
         playerVars: {
+            iv_load_policy:'3',
             autoplay:'1',
             controls: '0',
             loop: '1',
