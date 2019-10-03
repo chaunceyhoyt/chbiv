@@ -1,14 +1,21 @@
 var player,
     time_update_interval = 0;
 
-  function onYouTubeIframeAPIReady() {
+function onYouTubeIframeAPIReady() {
     player = new YT.Player('video-placeholder', {
+        width: 600,
+        height: 400,
+        videoId: '9L1hTX-_wYQ'
+        playerVars: {
+ 
+            playlist: 'HlKBymW_2EA,rG1Hhtx7f28'
+        },
         events: {
-          'onReady': onPlayerReady,
-          'onStateChange': onPlayerStateChange
+            onReady: initialize
         }
     });
-  }
+}
+
 
 
 
