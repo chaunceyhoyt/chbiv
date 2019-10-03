@@ -4,13 +4,16 @@ var player,
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('video-placeholder', {
         events: {
-            onReady: initialize
+            'onReady': initialize
         }
     });
 }
 
-function initialize(){
 
+
+function initialize(){
+              player.loadPlaylist({list:PLlubYCP6MorQeOAGMBv3yzmr3m1jvRaWS,
+                     listType:playlist,);
     // Update the controls on load
     updateTimerDisplay();
     updateProgressBar();
