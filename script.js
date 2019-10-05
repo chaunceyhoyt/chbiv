@@ -5,7 +5,7 @@ function onYouTubeIframeAPIReady() {
     player = new YT.Player('video-placeholder', {
         width: 649,
         height: 378,
-        videoId: '9L1hTX-_wYQ',
+        videoId: 'ExF3Azfa4sc',
         playerVars: {
             modestbranding:'1',
             rel:'0',
@@ -13,14 +13,13 @@ function onYouTubeIframeAPIReady() {
             autoplay:'1',
             controls: '0',
             loop: '1',
-            playlist: 'HlKBymW_2EA,rG1Hhtx7f28'
+            playlist: 'j95TWbH3BqE'
         },
         events: {
             onReady: initialize
         }
     });
 }
-
 
 
 
