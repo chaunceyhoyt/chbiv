@@ -13,7 +13,7 @@ function onYouTubeIframeAPIReady() {
             autoplay:'1',
             controls: '0',
             loop: '1',
-            playlist: 'j95TWbH3BqE'
+            playlist: 'j95TWbH3BqE,eK0tNJHGXNk,ic7zjjSQa-Q'
         },
         events: {
             onReady: initialize
