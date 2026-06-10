@@ -4,9 +4,9 @@
 <title>www.CHBIV.com</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; }
 
   body {
     background: #0a0010;
@@ -57,19 +57,31 @@
     align-items: center;
   }
 
-  /* display:block removes the inline baseline gap that breaks sliced tables */
+  /* Table slices: zero out any gap sources */
+  #tv td { padding: 0; font-size: 0; line-height: 0; border: 0; }
   #tv img { display: block; }
 
-  #tv td { padding: 0; font-size: 0; line-height: 0; }
+  /* Glow lives on the wrapper — never touches the table or its images */
+  #tv-glow {
+    position: absolute;
+    inset: 0;
+    box-shadow:
+      0 0 18px 4px #ff00c8,
+      0 0 50px 10px #7700ff,
+      inset 0 0 30px rgba(119,0,255,0.15);
+    pointer-events: none;
+    z-index: 20;
+  }
 
   #tv {
     max-width: 858px;
     position: relative;
-    filter:
-      hue-rotate(200deg) saturate(2) brightness(0.9)
-      drop-shadow(0 0 8px #ff00c8)
-      drop-shadow(0 0 20px #7700ff)
-      drop-shadow(0 0 40px rgba(119,0,255,0.4));
+  }
+
+  /* Tint bezel images — filter on individual imgs is fine once display:block
+     is set, and it never touches the screen area */
+  #Table_01 img:not(#screen *) {
+    filter: hue-rotate(200deg) saturate(1.8) brightness(0.85);
   }
 
   /* Screen container — sits over the placeholder */
@@ -153,21 +165,18 @@
     pointer-events: none;
   }
 
-  /* Clickable buttons glow on hover */
+  /* Button hover — brightness only, no extra hue-rotate needed */
   img.next, img.prev, img.input-btn {
     cursor: pointer;
     transition: filter 0.15s;
-    filter: hue-rotate(200deg) saturate(2) brightness(0.9);
   }
 
   img.next:hover, img.prev:hover, img.input-btn:hover {
-    filter: hue-rotate(200deg) saturate(3) brightness(1.6)
-            drop-shadow(0 0 6px #ff00c8);
+    filter: hue-rotate(200deg) saturate(3) brightness(2);
   }
 
   img.next:active, img.prev:active, img.input-btn:active {
-    filter: hue-rotate(200deg) saturate(4) brightness(2)
-            drop-shadow(0 0 12px #fff);
+    filter: hue-rotate(200deg) saturate(4) brightness(3);
   }
 
   /* Footer ticker */
@@ -212,6 +221,7 @@
 <div id="tv-wrapper">
 
   <div id="tv">
+  <div id="tv-glow"></div>
   <table id="Table_01" width="858" height="723" border="0" cellpadding="0" cellspacing="0">
     <tr>
       <td colspan="8">
