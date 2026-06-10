@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>www.CHBIV.com</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0010;
+    background-image:
+      linear-gradient(180deg, #0a0010 0%, #1a0030 40%, #0d0020 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'VT323', monospace;
+    overflow: hidden;
+  }
+
+  /* Synthwave grid floor */
+  body::before {
+    content: '';
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 45vh;
+    background-image:
+      linear-gradient(transparent 0%, rgba(255,0,200,0.15) 100%),
+      repeating-linear-gradient(90deg, rgba(255,0,200,0.2) 0px, transparent 1px, transparent 60px, rgba(255,0,200,0.2) 61px),
+      repeating-linear-gradient(0deg, rgba(255,0,200,0.2) 0px, transparent 1px, transparent 40px, rgba(255,0,200,0.2) 41px);
+    transform: perspective(300px) rotateX(40deg);
+    transform-origin: bottom center;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Horizon glow */
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: 43vh; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ff00c8, #00fff7, #ff00c8, transparent);
+    box-shadow: 0 0 20px #ff00c8, 0 0 60px #ff00c8;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #tv-wrapper {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Channel / status bar above TV */
+  #hud {
+    width: 858px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 16px;
+    margin-bottom: 6px;
+    border: 1px solid rgba(0,255,247,0.3);
+    background: rgba(0,0,0,0.6);
+    color: #00fff7;
+    font-size: 22px;
+    letter-spacing: 3px;
+    text-shadow: 0 0 8px #00fff7;
+  }
+
+  #hud .blink {
+    animation: blink 1.2s step-start infinite;
+    color: #ff00c8;
+    text-shadow: 0 0 8px #ff00c8;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* The TV frame gets a neon glow */
+  #tv {
+    max-width: 858px;
+    position: relative;
+    filter:
+      drop-shadow(0 0 8px #ff00c8)
+      drop-shadow(0 0 20px #7700ff)
+      drop-shadow(0 0 40px rgba(119,0,255,0.4));
+    image-rendering: pixelated;
+  }
+
+  /* Colorize the TV PNGs with a neon tint */
+  #tv img:not(#screen img):not(.screen-img) {
+    filter: hue-rotate(200deg) saturate(2) brightness(0.9);
+  }
+
+  /* Screen container — sits over the placeholder */
+  #screen-wrap {
+    position: relative;
+    width: 649px;
+    height: 378px;
+  }
+
+  #screen {
+    width: 649px;
+    height: 378px;
+    position: relative;
+    background: #000;
+  }
+
+  /* Scanline overlay */
+  #screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.35) 2px,
+      rgba(0,0,0,0.35) 4px
+    );
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  /* CRT vignette */
+  #screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    z-index: 51;
+  }
+
+  /* Channel badge that flashes when switching */
+  #channel-badge {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    color: #00fff7;
+    font-size: 36px;
+    font-family: 'VT323', monospace;
+    text-shadow: 0 0 10px #00fff7;
+    letter-spacing: 2px;
+    z-index: 60;
+    opacity: 0;
+    transition: opacity 0.1s;
+    pointer-events: none;
+  }
+
+  #channel-badge.show {
+    opacity: 1;
+    animation: fadeout 1.8s forwards;
+  }
+
+  @keyframes fadeout {
+    0%   { opacity: 1; }
+    60%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* Mode label in corner */
+  #mode-label {
+    position: absolute;
+    bottom: 12px;
+    left: 14px;
+    color: #ff00c8;
+    font-size: 20px;
+    font-family: 'VT323', monospace;
+    text-shadow: 0 0 8px #ff00c8;
+    letter-spacing: 2px;
+    z-index: 60;
+    pointer-events: none;
+  }
+
+  /* Clickable buttons glow on hover */
+  img.next, img.prev, img.input-btn {
+    cursor: pointer;
+    transition: filter 0.15s;
+    filter: hue-rotate(200deg) saturate(2) brightness(0.9);
+  }
+
+  img.next:hover, img.prev:hover, img.input-btn:hover {
+    filter: hue-rotate(200deg) saturate(3) brightness(1.6)
+            drop-shadow(0 0 6px #ff00c8);
+  }
+
+  img.next:active, img.prev:active, img.input-btn:active {
+    filter: hue-rotate(200deg) saturate(4) brightness(2)
+            drop-shadow(0 0 12px #fff);
+  }
+
+  /* Footer ticker */
+  #ticker-wrap {
+    width: 858px;
+    overflow: hidden;
+    margin-top: 8px;
+    padding: 4px 0;
+    border-top: 1px solid rgba(255,0,200,0.3);
+    border-bottom: 1px solid rgba(255,0,200,0.3);
+    background: rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 10;
+  }
+
+  #ticker {
+    display: inline-block;
+    white-space: nowrap;
+    color: #ff00c8;
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 6px #ff00c8;
+    animation: ticker 28s linear infinite;
+  }
+
+  @keyframes ticker {
+    0%   { transform: translateX(858px); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* No-input static screen */
+  #static-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+</head>
+<body>
+
+<div id="tv-wrapper">
+
+  <div id="hud">
+    <span>CHBIV &nbsp; &mdash; &nbsp; <span id="hud-mode">TV</span></span>
+    <span id="clock"></span>
+    <span class="blink">&#9646; REC</span>
+  </div>
+
+  <div id="tv">
+  <table id="Table_01" width="858" height="723" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td colspan="8">
+        <img src="images/vippng_01.png" width="858" height="87" alt=""></td>
+    </tr>
+    <tr>
+      <td rowspan="6">
+        <img src="images/vippng_02.png" width="105" height="635" alt=""></td>
+      <td colspan="2">
+        <div id="screen-wrap">
+          <div id="screen"></div>
+          <div id="channel-badge">CH --</div>
+          <div id="mode-label">TV</div>
+        </div>
+      </td>
+      <td colspan="5" rowspan="2">
+        <img src="images/vippng_04.png" width="104" height="506" alt=""></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <img src="images/tv_05.png" width="649" height="128" alt=""></td>
+    </tr>
+    <tr>
+      <td rowspan="4">
+        <img src="images/vippng_06.png" width="616" height="129" alt=""></td>
+      <td colspan="2">
+        <img class="next" src="images/vippng_07.png" width="45" height="35" alt="">
+      </td>
+      <td rowspan="4">
+        <img src="images/vippng_08.png" width="1" height="129" alt=""></td>
+      <td colspan="2">
+        <img src="images/vippng_09.png" width="43" height="35" alt=""></td>
+      <td rowspan="4">
+        <img src="images/vippng_10.png" width="48" height="129" alt=""></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <img src="images/vippng_11.png" width="45" height="11" alt=""></td>
+      <td colspan="2">
+        <img src="images/vippng_12.png" width="43" height="11" alt=""></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <img class="prev" src="images/vippng_13.png" width="45" height="35" alt=""></td>
+      <td rowspan="2">
+        <img src="images/vippng_14.png" width="2" height="83" alt=""></td>
+      <td>
+        <img class="input-btn" src="images/vippng_15.png" width="41" height="35" alt="">
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <img src="images/vippng_16.png" width="45" height="48" alt=""></td>
+      <td>
+        <img src="images/vippng_17.png" width="41" height="48" alt=""></td>
+    </tr>
+    <tr>
+      <td><img src="images/spacer.gif" width="105" height="1" alt=""></td>
+      <td><img src="images/spacer.gif" width="616" height="1" alt=""></td>
+      <td><img src="images/spacer.gif" width="33" height="1" alt=""></td>
+      <td><img src="images/spacer.gif" width="12" height="1" alt=""></td>
+      <td><img src="images/spacer.gif" width="1" height="1" alt=""></td>
+      <td><img src="images/spacer.gif" width="2" height="1" alt=""></td>
+      <td><img src="images/spacer.gif" width="41" height="1" alt=""></td>
+      <td><img src="images/spacer.gif" width="48" height="1" alt=""></td>
+    </tr>
+  </table>
+  </div>
+
+  <div id="ticker-wrap">
+    <span id="ticker">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      ★ CHBIV ★ &nbsp;&nbsp; PRESS INPUT TO SWITCH MODE &nbsp;&nbsp; ★ &nbsp;&nbsp;
+      CH UP / CH DOWN TO CHANGE VIDEO &nbsp;&nbsp; ★ &nbsp;&nbsp;
+      CHBIV.COM &nbsp;&nbsp; ★ &nbsp;&nbsp;
+      NOW PLAYING &nbsp;&nbsp; ★ &nbsp;&nbsp; CHBIV ★
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </span>
+  </div>
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+var player;
+var currentMode = 0;
+var channelIndex = 0;
+var channelList = [
+  'ExF3Azfa4sc',
+  'j95TWbH3BqE',
+  'kzJvpfmHS3k',
+  'eK0tNJHGXNk',
+  'ic7zjjSQa-Q'
+];
+
+var modes = [
+  {
+    label: 'TV',
+    enter: function () {
+      $('#screen').html('<div id="video-placeholder"></div>');
+      $('#mode-label, #hud-mode').text('TV');
+      createPlayer();
+    },
+    leave: function () {
+      if (player) { player.destroy(); player = null; }
+    }
+  },
+  {
+    label: 'GAME',
+    enter: function () {
+      $('#screen').html('<iframe src="game/index.html" width="649" height="378" frameborder="0" scrolling="no" style="display:block;"></iframe>');
+      $('#mode-label, #hud-mode').text('GAME');
+    },
+    leave: function () { $('#screen').empty(); }
+  },
+  {
+    label: 'NO SIGNAL',
+    enter: function () {
+      $('#screen').html('<canvas id="static-canvas"></canvas>');
+      $('#mode-label, #hud-mode').text('NO SIGNAL');
+      startStatic();
+    },
+    leave: function () {
+      stopStatic();
+      $('#screen').empty();
+    }
+  }
+];
+
+// ── Static noise ────────────────────────────────────────────────
+var staticFrame;
+function startStatic() {
+  var canvas = document.getElementById('static-canvas');
+  if (!canvas) return;
+  canvas.width  = 649;
+  canvas.height = 378;
+  var ctx = canvas.getContext('2d');
+  function draw() {
+    var img = ctx.createImageData(649, 378);
+    for (var i = 0; i < img.data.length; i += 4) {
+      var v = Math.random() > 0.5 ? 255 : 0;
+      // tint toward magenta/cyan for that 80s vibe
+      img.data[i]     = v * 0.9;
+      img.data[i + 1] = v * 0.1;
+      img.data[i + 2] = v * 0.9;
+      img.data[i + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    staticFrame = requestAnimationFrame(draw);
+  }
+  draw();
+}
+function stopStatic() {
+  if (staticFrame) { cancelAnimationFrame(staticFrame); staticFrame = null; }
+}
+
+// ── YouTube ──────────────────────────────────────────────────────
+function createPlayer() {
+  if (typeof YT === 'undefined' || !YT.Player) {
+    window._pendingPlayer = true;
+    return;
+  }
+  player = new YT.Player('video-placeholder', {
+    width: 649,
+    height: 378,
+    videoId: channelList[channelIndex],
+    playerVars: {
+      autoplay: 1, controls: 0, loop: 1, rel: 0,
+      modestbranding: 1, iv_load_policy: 3, showinfo: 0,
+      fs: 0, disablekb: 1, cc_load_policy: 0, playsinline: 1,
+      playlist: channelList.join(',')
+    },
+    events: { onReady: function () { player.playVideo(); } }
+  });
+}
+
+function onYouTubeIframeAPIReady() {
+  if (window._pendingPlayer) { window._pendingPlayer = false; createPlayer(); }
+}
+
+// ── Channel badge ────────────────────────────────────────────────
+function showChannelBadge(n) {
+  var badge = $('#channel-badge');
+  badge.text('CH ' + String(n + 1).padStart(2, '0'));
+  badge.removeClass('show');
+  void badge[0].offsetWidth; // reflow to restart animation
+  badge.addClass('show');
+}
+
+// ── Clock ────────────────────────────────────────────────────────
+function updateClock() {
+  var d = new Date();
+  var h = String(d.getHours()).padStart(2,'0');
+  var m = String(d.getMinutes()).padStart(2,'0');
+  var s = String(d.getSeconds()).padStart(2,'0');
+  $('#clock').text(h + ':' + m + ':' + s);
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── Controls ─────────────────────────────────────────────────────
+$(document).ready(function () {
+  modes[0].enter();
+
+  $('.input-btn').on('click', function () {
+    modes[currentMode].leave();
+    currentMode = (currentMode + 1) % modes.length;
+    modes[currentMode].enter();
+  });
+
+  $('.next').on('click', function () {
+    if (modes[currentMode].label !== 'TV' || !player) return;
+    channelIndex = (channelIndex + 1) % channelList.length;
+    player.nextVideo();
+    showChannelBadge(channelIndex);
+  });
+
+  $('.prev').on('click', function () {
+    if (modes[currentMode].label !== 'TV' || !player) return;
+    channelIndex = (channelIndex - 1 + channelList.length) % channelList.length;
+    player.previousVideo();
+    showChannelBadge(channelIndex);
+  });
+});
+</script>
+</body>
+</html>
