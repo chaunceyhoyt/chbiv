@@ -57,34 +57,11 @@
     align-items: center;
   }
 
-  /* Channel / status bar above TV */
-  #hud {
-    width: 858px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 16px;
-    margin-bottom: 6px;
-    border: 1px solid rgba(0,255,247,0.3);
-    background: rgba(0,0,0,0.6);
-    color: #00fff7;
-    font-size: 22px;
-    letter-spacing: 3px;
-    text-shadow: 0 0 8px #00fff7;
-  }
+  /* display:block removes the inline baseline gap that breaks sliced tables */
+  #tv img { display: block; }
 
-  #hud .blink {
-    animation: blink 1.2s step-start infinite;
-    color: #ff00c8;
-    text-shadow: 0 0 8px #ff00c8;
-  }
+  #tv td { padding: 0; font-size: 0; line-height: 0; }
 
-  @keyframes blink {
-    50% { opacity: 0; }
-  }
-
-  /* The TV frame gets a neon glow + color tint — single filter on the
-     container avoids subpixel gaps that per-image filters cause in tables */
   #tv {
     max-width: 858px;
     position: relative;
@@ -234,12 +211,6 @@
 
 <div id="tv-wrapper">
 
-  <div id="hud">
-    <span>CHBIV &nbsp; &mdash; &nbsp; <span id="hud-mode">TV</span></span>
-    <span id="clock"></span>
-    <span class="blink">&#9646; REC</span>
-  </div>
-
   <div id="tv">
   <table id="Table_01" width="858" height="723" border="0" cellpadding="0" cellspacing="0">
     <tr>
@@ -342,7 +313,7 @@ var modes = [
     label: 'TV',
     enter: function () {
       $('#screen').html('<div id="video-placeholder"></div>');
-      $('#mode-label, #hud-mode').text('TV');
+      $('#mode-label').text('TV');
       createPlayer();
     },
     leave: function () {
@@ -353,7 +324,7 @@ var modes = [
     label: 'GAME',
     enter: function () {
       $('#screen').html('<iframe src="game/index.html" width="649" height="378" frameborder="0" scrolling="no" style="display:block;"></iframe>');
-      $('#mode-label, #hud-mode').text('GAME');
+      $('#mode-label').text('GAME');
     },
     leave: function () { $('#screen').empty(); }
   },
@@ -361,7 +332,7 @@ var modes = [
     label: 'NO SIGNAL',
     enter: function () {
       $('#screen').html('<canvas id="static-canvas"></canvas>');
-      $('#mode-label, #hud-mode').text('NO SIGNAL');
+      $('#mode-label').text('NO SIGNAL');
       startStatic();
     },
     leave: function () {
@@ -430,17 +401,6 @@ function showChannelBadge(n) {
   void badge[0].offsetWidth; // reflow to restart animation
   badge.addClass('show');
 }
-
-// ── Clock ────────────────────────────────────────────────────────
-function updateClock() {
-  var d = new Date();
-  var h = String(d.getHours()).padStart(2,'0');
-  var m = String(d.getMinutes()).padStart(2,'0');
-  var s = String(d.getSeconds()).padStart(2,'0');
-  $('#clock').text(h + ':' + m + ':' + s);
-}
-setInterval(updateClock, 1000);
-updateClock();
 
 // ── Controls ─────────────────────────────────────────────────────
 $(document).ready(function () {
