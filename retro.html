@@ -298,6 +298,7 @@ var channelList = [
   'eK0tNJHGXNk',
   'ic7zjjSQa-Q'
 ];
+var channelTimes = channelList.map(function () { return 0; });
 
 var modes = [
   {
@@ -308,7 +309,11 @@ var modes = [
       createPlayer();
     },
     leave: function () {
-      if (player) { player.destroy(); player = null; }
+      if (player) {
+        channelTimes[channelIndex] = player.getCurrentTime();
+        player.destroy();
+        player = null;
+      }
     }
   },
   {
@@ -377,7 +382,12 @@ function createPlayer() {
       fs: 0, disablekb: 1, cc_load_policy: 0, playsinline: 1,
       playlist: channelList.join(',')
     },
-    events: { onReady: function () { player.playVideo(); } }
+    events: { onReady: function () {
+      if (channelTimes[channelIndex] > 0) {
+        player.seekTo(channelTimes[channelIndex], true);
+      }
+      player.playVideo();
+    } }
   });
 }
 
@@ -420,15 +430,17 @@ $(document).ready(function () {
 
   $('.next').on('click', function () {
     if (modes[currentMode].label !== 'TV' || !player) return;
+    channelTimes[channelIndex] = player.getCurrentTime();
     channelIndex = (channelIndex + 1) % channelList.length;
-    player.nextVideo();
+    player.loadVideoById({ videoId: channelList[channelIndex], startSeconds: channelTimes[channelIndex] });
     showChannelBadge(channelIndex);
   });
 
   $('.prev').on('click', function () {
     if (modes[currentMode].label !== 'TV' || !player) return;
+    channelTimes[channelIndex] = player.getCurrentTime();
     channelIndex = (channelIndex - 1 + channelList.length) % channelList.length;
-    player.previousVideo();
+    player.loadVideoById({ videoId: channelList[channelIndex], startSeconds: channelTimes[channelIndex] });
     showChannelBadge(channelIndex);
   });
 });
