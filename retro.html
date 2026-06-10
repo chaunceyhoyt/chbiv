@@ -407,10 +407,14 @@ $(document).ready(function () {
     modes[currentMode].leave();
     currentMode = (currentMode + 1) % modes.length;
     modes[currentMode].enter();
-    var label = $('#mode-label');
-    label.removeClass('show');
-    void label[0].offsetWidth;
-    label.text(modes[currentMode].label).addClass('show');
+    if (modes[currentMode].label === 'TV') {
+      showChannelBadge(channelIndex);
+    } else {
+      var label = $('#mode-label');
+      label.removeClass('show');
+      void label[0].offsetWidth;
+      label.text(modes[currentMode].label).addClass('show');
+    }
   });
 
   $('.next').on('click', function () {
