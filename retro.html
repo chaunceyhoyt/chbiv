@@ -392,11 +392,20 @@ function onYouTubeIframeAPIReady() {
 
 // ── Channel badge ────────────────────────────────────────────────
 function showChannelBadge(n) {
+  $('#mode-label').removeClass('show');
   var badge = $('#channel-badge');
   badge.text('CH ' + String(n + 1).padStart(2, '0'));
   badge.removeClass('show');
-  void badge[0].offsetWidth; // reflow to restart animation
+  void badge[0].offsetWidth;
   badge.addClass('show');
+}
+
+function showModeLabel(text) {
+  $('#channel-badge').removeClass('show');
+  var label = $('#mode-label');
+  label.removeClass('show');
+  void label[0].offsetWidth;
+  label.text(text).addClass('show');
 }
 
 // ── Controls ─────────────────────────────────────────────────────
@@ -410,10 +419,7 @@ $(document).ready(function () {
     if (modes[currentMode].label === 'TV') {
       showChannelBadge(channelIndex);
     } else {
-      var label = $('#mode-label');
-      label.removeClass('show');
-      void label[0].offsetWidth;
-      label.text(modes[currentMode].label).addClass('show');
+      showModeLabel(modes[currentMode].label);
     }
   });
 
