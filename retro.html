@@ -78,11 +78,6 @@
     position: relative;
   }
 
-  /* Tint bezel images — filter on individual imgs is fine once display:block
-     is set, and it never touches the screen area */
-  #Table_01 img:not(#screen *) {
-    filter: hue-rotate(200deg) saturate(1.8) brightness(0.85);
-  }
 
   /* Screen container — sits over the placeholder */
   #screen-wrap {
@@ -172,11 +167,11 @@
   }
 
   img.next:hover, img.prev:hover, img.input-btn:hover {
-    filter: hue-rotate(200deg) saturate(3) brightness(2);
+    filter: brightness(1.6);
   }
 
   img.next:active, img.prev:active, img.input-btn:active {
-    filter: hue-rotate(200deg) saturate(4) brightness(3);
+    filter: brightness(2.5);
   }
 
   /* Footer ticker */
