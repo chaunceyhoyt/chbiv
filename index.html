@@ -217,7 +217,129 @@
     width: 100%;
     height: 100%;
   }
-</style>
+
+  /* ── Game controller — mobile portrait only ───────────────────── */
+  #game-controller {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 220px;
+    background: #0d0000;
+    border-top: 2px solid rgba(255,0,0,0.5);
+    box-shadow: 0 -4px 30px rgba(255,0,0,0.3);
+    z-index: 200;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 16px 24px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #game-controller.visible {
+    transform: translateY(0);
+  }
+
+  /* D-pad */
+  #dpad {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    flex-shrink: 0;
+  }
+
+  .dpad-btn {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    background: #1a0000;
+    border: 1px solid rgba(255,0,0,0.4);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff2200;
+    font-size: 18px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    active-color: #ff0000;
+  }
+
+  .dpad-btn:active { background: rgba(255,0,0,0.3); }
+
+  #dpad-up    { top: 0;    left: 37px; }
+  #dpad-down  { bottom: 0; left: 37px; }
+  #dpad-left  { top: 37px; left: 0;    }
+  #dpad-right { top: 37px; right: 0;   }
+  #dpad-center {
+    position: absolute;
+    top: 37px; left: 37px;
+    width: 36px; height: 36px;
+    background: #0d0000;
+    border: 1px solid rgba(255,0,0,0.2);
+    border-radius: 4px;
+  }
+
+  /* Center controls (Select + Start) */
+  #ctrl-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .small-btn {
+    background: #1a0000;
+    border: 1px solid rgba(255,0,0,0.4);
+    border-radius: 20px;
+    color: #ff2200;
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding: 4px 14px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .small-btn:active { background: rgba(255,0,0,0.3); }
+
+  /* A + B buttons */
+  #ab-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .ab-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,0,0,0.5);
+    background: #1a0000;
+    color: #ff2200;
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    box-shadow: 0 0 8px rgba(255,0,0,0.3);
+  }
+
+  .ab-btn:active { background: rgba(255,0,0,0.4); }
+
+  /* Only show on mobile portrait */
+  @media (max-width: 600px) and (orientation: portrait) {
+    #game-controller {
+      display: flex;
+    }
+  }</style>
 </head>
 <body>
 
@@ -300,6 +422,25 @@
     </span>
   </div>
 
+</div>
+
+<!-- Game controller — mobile portrait only -->
+<div id="game-controller">
+  <div id="dpad">
+    <div class="dpad-btn" id="dpad-up">▲</div>
+    <div class="dpad-btn" id="dpad-left">◀</div>
+    <div class="dpad-center"></div>
+    <div class="dpad-btn" id="dpad-right">▶</div>
+    <div class="dpad-btn" id="dpad-down">▼</div>
+  </div>
+  <div id="ctrl-center">
+    <div class="small-btn" id="btn-select">SELECT</div>
+    <div class="small-btn" id="btn-start">START</div>
+  </div>
+  <div id="ab-buttons">
+    <div class="ab-btn" id="btn-b">B</div>
+    <div class="ab-btn" id="btn-a">A</div>
+  </div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -440,9 +581,26 @@ $(document).ready(function () {
     modes[currentMode].enter();
     if (modes[currentMode].label === 'TV') {
       showChannelBadge(channelIndex);
+      $('#game-controller').removeClass('visible');
+    } else if (modes[currentMode].label === 'GAME') {
+      showModeLabel(modes[currentMode].label);
+      // only slide up on mobile portrait
+      if (window.innerWidth <= 600 && window.innerHeight > window.innerWidth) {
+        $('#game-controller').addClass('visible');
+      }
     } else {
       showModeLabel(modes[currentMode].label);
+      $('#game-controller').removeClass('visible');
     }
+  });
+
+  // Hide controller if orientation changes away from portrait
+  window.addEventListener('orientationchange', function () {
+    setTimeout(function () {
+      if (window.innerWidth > window.innerHeight) {
+        $('#game-controller').removeClass('visible');
+      }
+    }, 100);
   });
 
   $('.next').on('click', function () {
