@@ -220,8 +220,8 @@
 
   /* ── Game controller — mobile portrait only ───────────────────── */
   #game-controller {
-    display: none;
     position: fixed;
+    display: flex;
     bottom: 0; left: 0; right: 0;
     height: 220px;
     background: #0d0000;
@@ -334,11 +334,9 @@
 
   .ab-btn:active { background: rgba(255,0,0,0.4); }
 
-  /* Only show on mobile portrait */
-  @media (max-width: 600px) and (orientation: portrait) {
-    #game-controller {
-      display: flex;
-    }
+  /* Hide on desktop and landscape */
+  @media (min-width: 601px), (orientation: landscape) {
+    #game-controller { display: none !important; }
   }</style>
 </head>
 <body>
@@ -584,10 +582,7 @@ $(document).ready(function () {
       $('#game-controller').removeClass('visible');
     } else if (modes[currentMode].label === 'GAME') {
       showModeLabel(modes[currentMode].label);
-      // only slide up on mobile portrait
-      if (window.innerWidth <= 600 && window.innerHeight > window.innerWidth) {
-        $('#game-controller').addClass('visible');
-      }
+      $('#game-controller').addClass('visible');
     } else {
       showModeLabel(modes[currentMode].label);
       $('#game-controller').removeClass('visible');
