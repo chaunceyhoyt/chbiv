@@ -5,8 +5,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="description" content="Something is broadcasting on Channel 2029. Tune in.">
 <meta name="robots" content="index, follow">
-
-<!-- Open Graph -->
 <meta property="og:title" content="Channel 2029">
 <meta property="og:description" content="Something is broadcasting on Channel 2029. Tune in.">
 <meta property="og:type" content="website">
@@ -14,8 +12,6 @@
 <meta property="og:image" content="https://channel2029.com/images/preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-
-<!-- Twitter/X card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Channel 2029">
 <meta name="twitter:description" content="Something is broadcasting on Channel 2029. Tune in.">
@@ -36,7 +32,6 @@
     overflow: hidden;
   }
 
-  /* Faint red noise grain */
   body::before {
     content: '';
     position: fixed;
@@ -48,7 +43,6 @@
     z-index: 0;
   }
 
-
   #tv-wrapper {
     position: relative;
     z-index: 10;
@@ -57,11 +51,9 @@
     align-items: center;
   }
 
-  /* Table slices: zero out any gap sources */
   #tv td { padding: 0; font-size: 0; line-height: 0; border: 0; }
   #tv img { display: block; }
 
-  /* Red glow around the TV — on overlay div, never touches the table */
   #tv-glow {
     position: absolute;
     inset: 0;
@@ -73,12 +65,8 @@
     z-index: 20;
   }
 
-  #tv {
-    max-width: 858px;
-    position: relative;
-  }
+  #tv { max-width: 858px; position: relative; }
 
-  /* Screen area */
   #screen-wrap {
     position: relative;
     width: 649px;
@@ -90,25 +78,21 @@
     height: 378px;
     position: relative;
     background: #000;
+    overflow: hidden;
   }
 
-  /* Scanlines — subtle */
   #screen::after {
     content: '';
     position: absolute;
     inset: 0;
     background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.10) 2px,
-      rgba(0,0,0,0.10) 4px
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.10) 2px, rgba(0,0,0,0.10) 4px
     );
     pointer-events: none;
     z-index: 50;
   }
 
-  /* CRT vignette */
   #screen::before {
     content: '';
     position: absolute;
@@ -118,18 +102,14 @@
     z-index: 51;
   }
 
-  /* Channel OSD — red with RGB chromatic shadow */
   #channel-badge {
     position: absolute;
-    top: 10px;
-    right: 14px;
+    top: 10px; right: 14px;
     color: #fff;
     font-size: 38px;
     font-family: 'VT323', monospace;
     letter-spacing: 3px;
-    text-shadow:
-      -2px 0 rgba(255,0,0,0.9),
-       2px 0 rgba(0,200,255,0.7);
+    text-shadow: -2px 0 rgba(255,0,0,0.9), 2px 0 rgba(0,200,255,0.7);
     z-index: 60;
     opacity: 0;
     pointer-events: none;
@@ -146,43 +126,19 @@
     100% { opacity: 0; }
   }
 
-  /* Mode label — same position as channel badge, shown on input switch */
-  #mode-label {
-    position: absolute;
-    top: 10px;
-    right: 14px;
-    color: #fff;
-    font-size: 38px;
-    font-family: 'VT323', monospace;
-    letter-spacing: 3px;
-    text-shadow:
-      -2px 0 rgba(255,0,0,0.9),
-       2px 0 rgba(0,200,255,0.7);
-    z-index: 60;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  #mode-label.show {
-    opacity: 1;
-    animation: fadeout 1.8s forwards;
-  }
-
-  /* Buttons */
-  img.next, img.prev, img.input-btn {
+  img.next, img.prev {
     cursor: pointer;
     transition: filter 0.12s;
   }
 
-  img.next:hover, img.prev:hover, img.input-btn:hover {
+  img.next:hover, img.prev:hover {
     filter: brightness(1.8) sepia(1) saturate(8) hue-rotate(310deg);
   }
 
-  img.next:active, img.prev:active, img.input-btn:active {
+  img.next:active, img.prev:active {
     filter: brightness(3) sepia(1) saturate(10) hue-rotate(310deg);
   }
 
-  /* Ticker — red on black */
   #ticker-wrap {
     width: 858px;
     overflow: hidden;
@@ -210,132 +166,286 @@
     100% { transform: translateX(-100%); }
   }
 
-  /* Static canvas for no-signal */
-  #static-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
+  /* ── Guide Channel ─────────────────────────────────────────────── */
+  #guide {
+    width: 649px;
+    height: 378px;
+    background: #000820;
+    display: flex;
+    flex-direction: column;
+    font-family: 'VT323', monospace;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  #guide-header {
+    background: #001060;
+    padding: 5px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    border-bottom: 2px solid #0033cc;
+  }
+
+  #guide-title {
+    color: #ffff00;
+    font-size: 18px;
+    letter-spacing: 2px;
+    flex-shrink: 0;
+    margin-right: 6px;
+  }
+
+  #guide-day-picker {
+    display: flex;
+    gap: 3px;
+    flex: 1;
+  }
+
+  .guide-day {
+    color: #aaaaff;
+    font-size: 15px;
+    padding: 1px 5px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 2px;
+  }
+
+  .guide-day:hover { color: #fff; }
+
+  .guide-day.active {
+    background: #0033cc;
+    border-color: #6688ff;
+    color: #ffff00;
+  }
+
+  #guide-hour-jump {
+    background: #000820;
+    color: #00ccff;
+    border: 1px solid #0033cc;
+    font-family: 'VT323', monospace;
+    font-size: 15px;
+    padding: 1px 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  #guide-grid-wrap {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  #guide-channel-col {
+    width: 88px;
+    flex-shrink: 0;
+    background: #001060;
+    border-right: 2px solid #0033cc;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #guide-ch-spacer {
+    height: 26px;
+    border-bottom: 1px solid #0033cc;
+    flex-shrink: 0;
+  }
+
+  #guide-ch-name {
+    background: #000c40;
+    color: #ffff00;
+    font-size: 15px;
+    padding: 0 4px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #0033cc;
+  }
+
+  #guide-scroll-area {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+    scrollbar-width: thin;
+    scrollbar-color: #0033cc #000820;
+  }
+
+  #guide-scroll-area::-webkit-scrollbar { height: 5px; }
+  #guide-scroll-area::-webkit-scrollbar-track { background: #000820; }
+  #guide-scroll-area::-webkit-scrollbar-thumb { background: #0033cc; }
+
+  #guide-timeline {
+    position: relative;
     height: 100%;
   }
 
-  /* ── Game controller — mobile portrait only ───────────────────── */
-  #game-controller {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    height: 220px;
-    background: #0d0000;
-    border-top: 2px solid rgba(255,0,0,0.5);
-    box-shadow: 0 -4px 30px rgba(255,0,0,0.3);
-    z-index: 200;
-    display: none;
-    padding: 16px 24px;
-    box-sizing: border-box;
-    align-items: center;
-    justify-content: space-between;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateY(0);
-  }
-
-  /* D-pad */
-  #dpad {
+  #guide-time-header {
+    height: 26px;
     position: relative;
-    width: 110px;
-    height: 110px;
+    background: #001060;
+    border-bottom: 1px solid #0033cc;
     flex-shrink: 0;
   }
 
-  .dpad-btn {
+  .time-label {
     position: absolute;
-    width: 36px;
-    height: 36px;
-    background: #1a0000;
-    border: 1px solid rgba(255,0,0,0.4);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ff2200;
-    font-size: 18px;
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-    active-color: #ff0000;
-  }
-
-  .dpad-btn:active { background: rgba(255,0,0,0.3); }
-
-  #dpad-up    { top: 0;    left: 37px; }
-  #dpad-down  { bottom: 0; left: 37px; }
-  #dpad-left  { top: 37px; left: 0;    }
-  #dpad-right { top: 37px; right: 0;   }
-  #dpad-center {
-    position: absolute;
-    top: 37px; left: 37px;
-    width: 36px; height: 36px;
-    background: #0d0000;
-    border: 1px solid rgba(255,0,0,0.2);
-    border-radius: 4px;
-  }
-
-  /* Center controls (Select + Start) */
-  #ctrl-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-  }
-
-  .small-btn {
-    background: #1a0000;
-    border: 1px solid rgba(255,0,0,0.4);
-    border-radius: 20px;
-    color: #ff2200;
-    font-family: 'VT323', monospace;
+    top: 4px;
+    color: #00ccff;
     font-size: 14px;
-    letter-spacing: 1px;
-    padding: 4px 14px;
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
+    white-space: nowrap;
+    padding-left: 4px;
+    pointer-events: none;
   }
 
-  .small-btn:active { background: rgba(255,0,0,0.3); }
+  #guide-programs {
+    position: relative;
+    background: #000820;
+    height: calc(100% - 26px);
+  }
 
-  /* A + B buttons */
-  #ab-buttons {
+  .program-block {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    background: #001060;
+    border: 1px solid #0033cc;
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 4px 6px;
+    transition: background 0.1s;
+  }
+
+  .program-block:hover { background: #001f99; border-color: #6688ff; }
+  .program-block.favorited { border-color: #ffff00; border-width: 2px; }
+
+  .program-title {
+    color: #ffffff;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.1;
+  }
+
+  .program-time-label {
+    color: #00ccff;
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  .program-fav-star {
+    position: absolute;
+    top: 3px; right: 5px;
+    color: #ffff00;
+    font-size: 14px;
+    display: none;
+  }
+
+  .program-block.favorited .program-fav-star { display: block; }
+
+  #now-line {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: #ff2200;
+    z-index: 5;
+    pointer-events: none;
+    box-shadow: 0 0 4px #ff2200;
+  }
+
+  /* Popup */
+  #guide-popup {
+    position: fixed;
+    background: #001060;
+    border: 1px solid #6688ff;
+    color: #fff;
+    font-family: 'VT323', monospace;
+    font-size: 17px;
+    padding: 10px 14px;
+    z-index: 200;
+    min-width: 200px;
+    display: none;
+    box-shadow: 0 0 20px rgba(0,50,200,0.5);
+  }
+
+  #guide-popup.open { display: block; }
+
+  .popup-title {
+    color: #ffff00;
+    font-size: 19px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #0033cc;
+    padding-bottom: 4px;
+  }
+
+  .popup-time {
+    color: #00ccff;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .popup-option {
+    padding: 4px 0;
+    cursor: pointer;
+    color: #aaaaff;
     display: flex;
-    gap: 12px;
     align-items: center;
+    gap: 6px;
+  }
+
+  .popup-option:hover { color: #ffff00; }
+
+  .popup-close {
+    margin-top: 8px;
+    color: #ff4444;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .popup-close:hover { color: #ff8888; }
+
+  /* Now playing bar at bottom of guide */
+  #guide-now-bar {
+    background: #001060;
+    border-top: 1px solid #0033cc;
+    padding: 3px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     flex-shrink: 0;
   }
 
-  .ab-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,0,0,0.5);
-    background: #1a0000;
+  #guide-now-label {
     color: #ff2200;
-    font-family: 'VT323', monospace;
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-    box-shadow: 0 0 8px rgba(255,0,0,0.3);
+    font-size: 14px;
+    flex-shrink: 0;
   }
 
-  .ab-btn:active { background: rgba(255,0,0,0.4); }
+  #guide-now-title {
+    color: #ffffff;
+    font-size: 15px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
+  #guide-now-time {
+    color: #00ccff;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
 </style>
 </head>
 <body>
 
 <div id="tv-wrapper">
-
   <div id="tv">
   <div id="tv-glow"></div>
   <table id="Table_01" width="858" height="723" border="0" cellpadding="0" cellspacing="0">
@@ -349,8 +459,7 @@
       <td colspan="2">
         <div id="screen-wrap">
           <div id="screen"></div>
-          <div id="channel-badge">CH --</div>
-          <div id="mode-label">TV</div>
+          <div id="channel-badge"></div>
         </div>
       </td>
       <td colspan="5" rowspan="2">
@@ -385,7 +494,7 @@
       <td rowspan="2">
         <img src="images/vippng_14.png" width="2" height="83" alt=""></td>
       <td>
-        <img class="input-btn" src="images/vippng_15.png" width="41" height="35" alt="">
+        <img src="images/vippng_15.png" width="41" height="35" alt="">
       </td>
     </tr>
     <tr>
@@ -409,134 +518,114 @@
 
   <div id="ticker-wrap">
     <span id="ticker">
-      ★ &nbsp;&nbsp; PRESS INPUT TO SWITCH MODE &nbsp;&nbsp; ★ &nbsp;&nbsp; CH UP / CH DOWN TO CHANGE VIDEO &nbsp;&nbsp; ★
+      ★ &nbsp;&nbsp; CH UP / CH DOWN TO CHANGE CHANNEL &nbsp;&nbsp; ★ &nbsp;&nbsp; CH 0 — GUIDE &nbsp;&nbsp; ★ &nbsp;&nbsp; CH 2029 — NOW BROADCASTING &nbsp;&nbsp; ★
     </span>
   </div>
-
 </div>
 
-<!-- Game controller — mobile portrait only -->
-<div id="game-controller">
-  <div id="dpad">
-    <div class="dpad-btn" id="dpad-up">▲</div>
-    <div class="dpad-btn" id="dpad-left">◀</div>
-    <div class="dpad-center"></div>
-    <div class="dpad-btn" id="dpad-right">▶</div>
-    <div class="dpad-btn" id="dpad-down">▼</div>
-  </div>
-  <div id="ctrl-center">
-    <div class="small-btn" id="btn-select">SELECT</div>
-    <div class="small-btn" id="btn-start">START</div>
-  </div>
-  <div id="ab-buttons">
-    <div class="ab-btn" id="btn-b">B</div>
-    <div class="ab-btn" id="btn-a">A</div>
-  </div>
+<!-- Guide popup -->
+<div id="guide-popup">
+  <div class="popup-title" id="popup-title"></div>
+  <div class="popup-time" id="popup-time"></div>
+  <div class="popup-option" id="popup-fav">☆ &nbsp;ADD TO FAVORITES</div>
+  <div class="popup-option" id="popup-cal">📅 &nbsp;ADD REMINDER TO CALENDAR</div>
+  <div class="popup-close" id="popup-close">✕ CLOSE</div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
+
+// ── Placeholder schedule (weekly recurring) ──────────────────────
+// Replace with Google Calendar feed when ready
+// dow: 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
+// h/m: start hour/minute, dur: duration in minutes
+var weeklySchedule = [
+  // Monday
+  { title: 'SIGNAL TEST',            dow: 1, h: 6,  m: 0,  dur: 30  },
+  { title: 'MORNING TRANSMISSION',   dow: 1, h: 8,  m: 0,  dur: 60  },
+  { title: 'DEAD AIR',               dow: 1, h: 12, m: 0,  dur: 30  },
+  { title: 'AFTERNOON STATIC',       dow: 1, h: 15, m: 0,  dur: 90  },
+  { title: 'NIGHT BROADCAST',        dow: 1, h: 20, m: 0,  dur: 120 },
+  // Tuesday
+  { title: 'EARLY TRANSMISSION',     dow: 2, h: 7,  m: 30, dur: 45  },
+  { title: 'SIGNAL LOST',            dow: 2, h: 13, m: 0,  dur: 60  },
+  { title: 'EVENING STATIC',         dow: 2, h: 19, m: 0,  dur: 90  },
+  { title: 'LATE NIGHT BROADCAST',   dow: 2, h: 22, m: 30, dur: 60  },
+  // Wednesday
+  { title: 'MORNING STATIC',         dow: 3, h: 6,  m: 0,  dur: 60  },
+  { title: 'MID-DAY TRANSMISSION',   dow: 3, h: 11, m: 0,  dur: 90  },
+  { title: 'AFTERNOON BROADCAST',    dow: 3, h: 16, m: 30, dur: 60  },
+  { title: 'PRIME TIME STATIC',      dow: 3, h: 20, m: 0,  dur: 150 },
+  // Thursday
+  { title: 'DAWN SIGNAL',            dow: 4, h: 5,  m: 30, dur: 30  },
+  { title: 'MORNING BROADCAST',      dow: 4, h: 9,  m: 0,  dur: 60  },
+  { title: 'AFTERNOON STATIC',       dow: 4, h: 14, m: 0,  dur: 45  },
+  { title: 'EVENING TRANSMISSION',   dow: 4, h: 18, m: 0,  dur: 120 },
+  { title: 'NIGHT SIGNAL',           dow: 4, h: 23, m: 0,  dur: 60  },
+  // Friday
+  { title: 'MORNING STATIC',         dow: 5, h: 7,  m: 0,  dur: 60  },
+  { title: 'NOON BROADCAST',         dow: 5, h: 12, m: 0,  dur: 60  },
+  { title: 'FRIDAY TRANSMISSION',    dow: 5, h: 20, m: 0,  dur: 180 },
+  // Saturday
+  { title: 'WEEKEND SIGNAL',         dow: 6, h: 10, m: 0,  dur: 120 },
+  { title: 'AFTERNOON BROADCAST',    dow: 6, h: 14, m: 0,  dur: 90  },
+  { title: 'SATURDAY NIGHT STATIC',  dow: 6, h: 21, m: 0,  dur: 180 },
+  // Sunday
+  { title: 'SUNDAY MORNING STATIC',  dow: 0, h: 9,  m: 0,  dur: 120 },
+  { title: 'AFTERNOON TRANSMISSION', dow: 0, h: 15, m: 0,  dur: 90  },
+  { title: 'SUNDAY NIGHT BROADCAST', dow: 0, h: 20, m: 0,  dur: 120 }
+];
+
+var PX_PER_MIN = 4; // 5min = 20px, 30min = 120px, 1hr = 240px
+var DAY_NAMES  = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+var HOURS      = ['12AM','1AM','2AM','3AM','4AM','5AM','6AM','7AM','8AM','9AM','10AM','11AM',
+                  '12PM','1PM','2PM','3PM','4PM','5PM','6PM','7PM','8PM','9PM','10PM','11PM'];
+
+// ── Channel system ────────────────────────────────────────────────
+var currentChannel = 0; // 0 = content (CH 2029), 1 = guide (CH 0)
+
+var channels = [
+  {
+    num: 2029,
+    enter: enterContent,
+    leave: leaveContent
+  },
+  {
+    num: 0,
+    enter: enterGuide,
+    leave: leaveGuide
+  }
+];
+
+// ── YouTube (Content channel) ─────────────────────────────────────
 var player;
-var currentMode = 0;
-var channelIndex = 0;
-var channelList = [
-  'ExF3Azfa4sc',
-  'j95TWbH3BqE',
-  'kzJvpfmHS3k',
-  'eK0tNJHGXNk',
-  'ic7zjjSQa-Q'
-];
-var channelTimes = channelList.map(function () { return 0; });
+var videoId = 'ExF3Azfa4sc'; // placeholder — swap when schedule is live
 
-var modes = [
-  {
-    label: 'TV',
-    enter: function () {
-      $('#screen').html('<div id="video-placeholder"></div>');
-
-      createPlayer();
-    },
-    leave: function () {
-      if (player) {
-        channelTimes[channelIndex] = player.getCurrentTime();
-        player.destroy();
-        player = null;
-      }
-    }
-  },
-  {
-    label: 'GAME',
-    enter: function () {
-      $('#screen').html('<iframe src="game/index.html" width="649" height="378" frameborder="0" scrolling="no" style="display:block;"></iframe>');
-
-    },
-    leave: function () { $('#screen').empty(); }
-  },
-  {
-    label: 'NO SIGNAL',
-    enter: function () {
-      $('#screen').html('<canvas id="static-canvas"></canvas>');
-
-      startStatic();
-    },
-    leave: function () {
-      stopStatic();
-      $('#screen').empty();
-    }
-  }
-];
-
-// ── Static noise ────────────────────────────────────────────────
-var staticFrame;
-function startStatic() {
-  var canvas = document.getElementById('static-canvas');
-  if (!canvas) return;
-  canvas.width  = 649;
-  canvas.height = 378;
-  var ctx = canvas.getContext('2d');
-  function draw() {
-    var img = ctx.createImageData(649, 378);
-    for (var i = 0; i < img.data.length; i += 4) {
-      var v = Math.random();
-      var bright = v > 0.5 ? Math.floor(v * 255) : 0;
-      // RGB-split noise: bias toward red with occasional green/blue flecks
-      img.data[i]     = bright;
-      img.data[i + 1] = Math.random() > 0.92 ? Math.floor(Math.random() * 180) : 0;
-      img.data[i + 2] = Math.random() > 0.92 ? Math.floor(Math.random() * 180) : 0;
-      img.data[i + 3] = 255;
-    }
-    ctx.putImageData(img, 0, 0);
-    staticFrame = requestAnimationFrame(draw);
-  }
-  draw();
-}
-function stopStatic() {
-  if (staticFrame) { cancelAnimationFrame(staticFrame); staticFrame = null; }
+function enterContent() {
+  $('#screen').html('<div id="video-placeholder"></div>');
+  createPlayer();
 }
 
-// ── YouTube ──────────────────────────────────────────────────────
+function leaveContent() {
+  if (player) { player.destroy(); player = null; }
+}
+
 function createPlayer() {
   if (typeof YT === 'undefined' || !YT.Player) {
     window._pendingPlayer = true;
     return;
   }
   player = new YT.Player('video-placeholder', {
-    width: 649,
-    height: 378,
-    videoId: channelList[channelIndex],
+    width: 649, height: 378,
+    videoId: videoId,
     playerVars: {
       autoplay: 1, controls: 0, loop: 1, rel: 0,
       modestbranding: 1, iv_load_policy: 3, showinfo: 0,
       fs: 0, disablekb: 1, cc_load_policy: 0, playsinline: 1,
-      playlist: channelList.join(',')
+      playlist: videoId
     },
-    events: { onReady: function () {
-      if (channelTimes[channelIndex] > 0) {
-        player.seekTo(channelTimes[channelIndex], true);
-      }
-      player.playVideo();
-    } }
+    events: { onReady: function () { player.playVideo(); } }
   });
 }
 
@@ -544,68 +633,295 @@ function onYouTubeIframeAPIReady() {
   if (window._pendingPlayer) { window._pendingPlayer = false; createPlayer(); }
 }
 
-// ── Channel badge ────────────────────────────────────────────────
-function showChannelBadge(n) {
-  $('#mode-label').removeClass('show');
+// ── Guide channel ─────────────────────────────────────────────────
+var guideSelectedDay = null; // Date object for selected day
+var guidePopupBlock  = null; // currently open block data
+var favorites = JSON.parse(localStorage.getItem('ch2029_favs') || '{}');
+
+function getWeekDays() {
+  var today = new Date();
+  var dow   = today.getDay();
+  var monday = new Date(today);
+  monday.setDate(today.getDate() - ((dow + 6) % 7)); // Monday of current week
+  var days = [];
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    days.push(d);
+  }
+  return days;
+}
+
+function fmtTime(h, m) {
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  var h12  = h % 12 || 12;
+  return h12 + ':' + (m < 10 ? '0' + m : m) + ampm;
+}
+
+function blockKey(block, dateStr) {
+  return dateStr + '_' + block.title + '_' + block.h + block.m;
+}
+
+function enterGuide() {
+  var today = new Date();
+  guideSelectedDay = today;
+
+  var html = '<div id="guide">';
+  html += '<div id="guide-header">';
+  html += '<span id="guide-title">GUIDE</span>';
+  html += '<div id="guide-day-picker">';
+  var days = getWeekDays();
+  days.forEach(function(d) {
+    var isToday = d.toDateString() === today.toDateString();
+    html += '<span class="guide-day' + (isToday ? ' active' : '') + '" data-date="' + d.toISOString() + '">' + DAY_NAMES[d.getDay()] + '</span>';
+  });
+  html += '</div>';
+  html += '<select id="guide-hour-jump">';
+  HOURS.forEach(function(label, i) {
+    html += '<option value="' + i + '">' + label + '</option>';
+  });
+  html += '</select>';
+  html += '</div>'; // end header
+
+  html += '<div id="guide-grid-wrap">';
+  html += '<div id="guide-channel-col">';
+  html += '<div id="guide-ch-spacer"></div>';
+  html += '<div id="guide-ch-name">CHANNEL<br>2029</div>';
+  html += '</div>';
+  html += '<div id="guide-scroll-area"><div id="guide-timeline">';
+  html += '<div id="guide-time-header"></div>';
+  html += '<div id="guide-programs"><div id="now-line"></div></div>';
+  html += '</div></div>';
+  html += '</div>'; // end grid-wrap
+
+  html += '<div id="guide-now-bar">';
+  html += '<span id="guide-now-label">▶ NOW</span>';
+  html += '<span id="guide-now-title">—</span>';
+  html += '<span id="guide-now-time"></span>';
+  html += '</div>';
+
+  html += '</div>'; // end guide
+  $('#screen').html(html);
+
+  renderGuideDay(guideSelectedDay);
+  bindGuideEvents();
+}
+
+function leaveGuide() {
+  closePopup();
+  $('#screen').empty();
+}
+
+function renderGuideDay(date) {
+  var totalMins  = 24 * 60;
+  var totalWidth = totalMins * PX_PER_MIN;
+
+  $('#guide-timeline').css('width', totalWidth + 'px');
+
+  // Time header
+  var headerHtml = '';
+  for (var h = 0; h < 24; h++) {
+    var left = h * 60 * PX_PER_MIN;
+    headerHtml += '<span class="time-label" style="left:' + left + 'px">' + HOURS[h] + '</span>';
+  }
+  $('#guide-time-header').html(headerHtml);
+
+  // Programs
+  var dow = date.getDay();
+  var dateStr = date.toDateString();
+  var programs = weeklySchedule.filter(function(s) { return s.dow === dow; });
+
+  var progHtml = '<div id="now-line"></div>';
+  programs.forEach(function(s) {
+    var startMin = s.h * 60 + s.m;
+    var left     = startMin * PX_PER_MIN;
+    var width    = Math.max(s.dur * PX_PER_MIN - 2, 20);
+    var key      = blockKey(s, dateStr);
+    var isFav    = favorites[key] ? ' favorited' : '';
+    var timeStr  = fmtTime(s.h, s.m) + ' – ' + fmtTime(Math.floor((startMin + s.dur) / 60), (startMin + s.dur) % 60);
+
+    progHtml += '<div class="program-block' + isFav + '" ';
+    progHtml += 'data-key="' + key + '" ';
+    progHtml += 'data-title="' + s.title + '" ';
+    progHtml += 'data-time="' + timeStr + '" ';
+    progHtml += 'data-h="' + s.h + '" data-m="' + s.m + '" data-dur="' + s.dur + '" ';
+    progHtml += 'data-date="' + date.toDateString() + '" ';
+    progHtml += 'style="left:' + left + 'px;width:' + width + 'px">';
+    progHtml += '<span class="program-fav-star">★</span>';
+    progHtml += '<div class="program-title">' + s.title + '</div>';
+    progHtml += '<div class="program-time-label">' + fmtTime(s.h, s.m) + '</div>';
+    progHtml += '</div>';
+  });
+  $('#guide-programs').html(progHtml);
+
+  // Now line + now bar
+  updateNowIndicator(date, programs, dateStr);
+
+  // Scroll to current hour (or 8am if different day)
+  var now    = new Date();
+  var isToday = date.toDateString() === now.toDateString();
+  var scrollH = isToday ? now.getHours() : 8;
+  var scrollTo = Math.max(0, (scrollH * 60 * PX_PER_MIN) - 40);
+  $('#guide-scroll-area').scrollLeft(scrollTo);
+
+  // Hour jump
+  $('#guide-hour-jump').val(isToday ? now.getHours() : 8);
+}
+
+function updateNowIndicator(date, programs, dateStr) {
+  var now     = new Date();
+  var isToday = date.toDateString() === now.toDateString();
+
+  if (isToday) {
+    var nowMin = now.getHours() * 60 + now.getMinutes();
+    var left   = nowMin * PX_PER_MIN;
+    $('#now-line').css('left', left + 'px').show();
+
+    // Now bar
+    var current = null;
+    programs.forEach(function(s) {
+      var start = s.h * 60 + s.m;
+      var end   = start + s.dur;
+      if (nowMin >= start && nowMin < end) current = s;
+    });
+    if (current) {
+      var endMin  = current.h * 60 + current.m + current.dur;
+      $('#guide-now-title').text(current.title);
+      $('#guide-now-time').text(fmtTime(current.h, current.m) + ' – ' + fmtTime(Math.floor(endMin/60), endMin%60));
+    } else {
+      $('#guide-now-title').text('OFF AIR');
+      $('#guide-now-time').text('');
+    }
+  } else {
+    $('#now-line').hide();
+    $('#guide-now-title').text('—');
+    $('#guide-now-time').text('');
+  }
+}
+
+function bindGuideEvents() {
+  // Day picker
+  $(document).on('click', '.guide-day', function() {
+    $('.guide-day').removeClass('active');
+    $(this).addClass('active');
+    guideSelectedDay = new Date($(this).data('date'));
+    closePopup();
+    renderGuideDay(guideSelectedDay);
+  });
+
+  // Hour jump
+  $(document).on('change', '#guide-hour-jump', function() {
+    var h = parseInt($(this).val());
+    var scrollTo = Math.max(0, (h * 60 * PX_PER_MIN) - 40);
+    $('#guide-scroll-area').scrollLeft(scrollTo);
+  });
+
+  // Block click → popup
+  $(document).on('click', '.program-block', function(e) {
+    e.stopPropagation();
+    var el    = $(this);
+    var key   = el.data('key');
+    var title = el.data('title');
+    var time  = el.data('time');
+    var h     = el.data('h');
+    var m     = el.data('m');
+    var dur   = el.data('dur');
+    var date  = el.data('date');
+
+    guidePopupBlock = { key: key, title: title, time: time, h: h, m: m, dur: dur, date: date };
+
+    var isFav = favorites[key];
+    $('#popup-title').text(title);
+    $('#popup-time').text(time);
+    $('#popup-fav').html((isFav ? '★ REMOVE FROM FAVORITES' : '☆ ADD TO FAVORITES'));
+
+    var offset = el.offset();
+    var popW   = 210;
+    var left   = Math.min(offset.left, $(window).width() - popW - 10);
+    var top    = offset.top - 130;
+    if (top < 10) top = offset.top + el.height() + 5;
+
+    $('#guide-popup').css({ top: top, left: left }).addClass('open');
+  });
+
+  // Close popup on outside click
+  $(document).on('click', function(e) {
+    if (!$(e.target).closest('#guide-popup').length) closePopup();
+  });
+
+  $('#popup-close').on('click', closePopup);
+
+  // Favorite toggle
+  $('#popup-fav').on('click', function() {
+    if (!guidePopupBlock) return;
+    var key = guidePopupBlock.key;
+    if (favorites[key]) {
+      delete favorites[key];
+    } else {
+      favorites[key] = true;
+    }
+    localStorage.setItem('ch2029_favs', JSON.stringify(favorites));
+    // update block appearance
+    var block = $('.program-block[data-key="' + key + '"]');
+    block.toggleClass('favorited', !!favorites[key]);
+    closePopup();
+  });
+
+  // Add to calendar
+  $('#popup-cal').on('click', function() {
+    if (!guidePopupBlock) return;
+    var b = guidePopupBlock;
+
+    // Parse start datetime
+    var startDate = new Date(b.date);
+    startDate.setHours(b.h, b.m, 0, 0);
+    var endDate = new Date(startDate.getTime() + b.dur * 60000);
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function gcalDate(d) {
+      return d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) +
+             'T' + pad(d.getHours()) + pad(d.getMinutes()) + '00';
+    }
+
+    var gcalUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+      '&text=' + encodeURIComponent('Channel 2029: ' + b.title) +
+      '&dates=' + gcalDate(startDate) + '/' + gcalDate(endDate) +
+      '&details=' + encodeURIComponent('Scheduled broadcast on channel2029.com') +
+      '&location=' + encodeURIComponent('https://channel2029.com');
+
+    window.open(gcalUrl, '_blank');
+    closePopup();
+  });
+}
+
+function closePopup() {
+  $('#guide-popup').removeClass('open');
+  guidePopupBlock = null;
+}
+
+// ── Channel badge ─────────────────────────────────────────────────
+function showChannelBadge(num) {
   var badge = $('#channel-badge');
-  badge.text('CH ' + String(n + 1).padStart(2, '0'));
+  badge.text('CH ' + num);
   badge.removeClass('show');
   void badge[0].offsetWidth;
   badge.addClass('show');
 }
 
-function showModeLabel(text) {
-  $('#channel-badge').removeClass('show');
-  var label = $('#mode-label');
-  label.removeClass('show');
-  void label[0].offsetWidth;
-  label.text(text).addClass('show');
-}
-
-// ── Controls ─────────────────────────────────────────────────────
+// ── Controls ──────────────────────────────────────────────────────
 $(document).ready(function () {
-  modes[0].enter();
+  channels[currentChannel].enter();
+  showChannelBadge(channels[currentChannel].num);
 
-  $('.input-btn').on('click', function () {
-    modes[currentMode].leave();
-    currentMode = (currentMode + 1) % modes.length;
-    modes[currentMode].enter();
-    if (modes[currentMode].label === 'TV') {
-      showChannelBadge(channelIndex);
-      $('#game-controller').hide();
-    } else if (modes[currentMode].label === 'GAME') {
-      showModeLabel(modes[currentMode].label);
-      $('#game-controller').css('display', 'flex');
-    } else {
-      showModeLabel(modes[currentMode].label);
-      $('#game-controller').hide();
-    }
-  });
+  function changeChannel(dir) {
+    channels[currentChannel].leave();
+    currentChannel = (currentChannel + dir + channels.length) % channels.length;
+    channels[currentChannel].enter();
+    showChannelBadge(channels[currentChannel].num);
+  }
 
-  // Hide controller if orientation changes away from portrait
-  window.addEventListener('orientationchange', function () {
-    setTimeout(function () {
-      if (window.innerWidth > window.innerHeight) {
-        $('#game-controller').removeClass('visible');
-      }
-    }, 100);
-  });
-
-  $('.next').on('click', function () {
-    if (modes[currentMode].label !== 'TV' || !player) return;
-    channelTimes[channelIndex] = player.getCurrentTime();
-    channelIndex = (channelIndex + 1) % channelList.length;
-    player.loadVideoById({ videoId: channelList[channelIndex], startSeconds: channelTimes[channelIndex] });
-    showChannelBadge(channelIndex);
-  });
-
-  $('.prev').on('click', function () {
-    if (modes[currentMode].label !== 'TV' || !player) return;
-    channelTimes[channelIndex] = player.getCurrentTime();
-    channelIndex = (channelIndex - 1 + channelList.length) % channelList.length;
-    player.loadVideoById({ videoId: channelList[channelIndex], startSeconds: channelTimes[channelIndex] });
-    showChannelBadge(channelIndex);
-  });
+  $('.next').on('click', function () { changeChannel(1); });
+  $('.prev').on('click', function () { changeChannel(-1); });
 });
 </script>
 </body>
