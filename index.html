@@ -68,9 +68,12 @@
   #tv { max-width: 858px; position: relative; }
 
   #screen-wrap {
-    position: relative;
+    position: absolute;
+    top: 87px;
+    left: 105px;
     width: 649px;
     height: 378px;
+    z-index: 15;
   }
 
   #screen {
@@ -410,6 +413,123 @@
 
   .popup-close:hover { color: #ff8888; }
 
+  /* ── Mobile remote ──────────────────────────────────────────────── */
+  #mobile-remote {
+    display: none;
+  }
+
+  @media (max-width: 768px) and (orientation: portrait) {
+    body {
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+
+    #tv-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #tv { display: none; }
+    #ticker-wrap { display: none; }
+
+    #screen-wrap {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: 100vw;
+      height: calc(100vw * 378 / 649);
+      flex-shrink: 0;
+    }
+
+    #screen {
+      width: 649px;
+      height: 378px;
+      transform-origin: top left;
+      transform: scale(var(--screen-scale, 1));
+    }
+
+    #channel-badge {
+      transform-origin: top right;
+      transform: scale(var(--screen-scale, 1));
+    }
+
+    #mobile-remote {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      background: #0d0000;
+      gap: 20px;
+      border-top: 1px solid rgba(255,0,0,0.3);
+    }
+
+    #mobile-ch-display {
+      color: #ff2200;
+      font-family: 'VT323', monospace;
+      font-size: 48px;
+      letter-spacing: 6px;
+      text-shadow: -2px 0 rgba(255,0,0,0.5), 2px 0 rgba(0,200,255,0.4);
+      background: #0a0000;
+      border: 1px solid rgba(255,0,0,0.3);
+      padding: 6px 24px;
+      min-width: 160px;
+      text-align: center;
+    }
+
+    #mobile-btns {
+      display: flex;
+      gap: 32px;
+    }
+
+    .mobile-btn {
+      font-family: 'VT323', monospace;
+      font-size: 28px;
+      color: #ff2200;
+      background: #1a0000;
+      border: 1px solid rgba(255,0,0,0.5);
+      padding: 14px 32px;
+      cursor: pointer;
+      letter-spacing: 3px;
+      user-select: none;
+      -webkit-user-select: none;
+      border-radius: 4px;
+    }
+
+    .mobile-btn:active {
+      background: #330000;
+      border-color: #ff2200;
+      color: #fff;
+    }
+  }
+
+  @media (max-width: 1024px) and (orientation: landscape) and (max-height: 600px) {
+    body { overflow: hidden; justify-content: center; }
+
+    #tv-wrapper { position: fixed; inset: 0; z-index: 500; background: #000; display: flex; align-items: center; justify-content: center; }
+    #tv { display: none; }
+    #ticker-wrap { display: none; }
+    #mobile-remote { display: none !important; }
+
+    #screen-wrap {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: 649px;
+      height: 378px;
+      transform-origin: center center;
+      transform: scale(var(--screen-scale-landscape, 1));
+    }
+
+    #screen {
+      width: 649px;
+      height: 378px;
+      transform: none;
+    }
+  }
+
   /* Now playing bar at bottom of guide */
   #guide-now-bar {
     background: #001060;
@@ -446,6 +566,10 @@
 <body>
 
 <div id="tv-wrapper">
+  <div id="screen-wrap">
+    <div id="screen"></div>
+    <div id="channel-badge"></div>
+  </div>
   <div id="tv">
   <div id="tv-glow"></div>
   <table id="Table_01" width="858" height="723" border="0" cellpadding="0" cellspacing="0">
@@ -457,10 +581,7 @@
       <td rowspan="6">
         <img src="images/vippng_02.png" width="105" height="635" alt=""></td>
       <td colspan="2">
-        <div id="screen-wrap">
-          <div id="screen"></div>
-          <div id="channel-badge"></div>
-        </div>
+        <img src="images/spacer.gif" width="649" height="378" alt="">
       </td>
       <td colspan="5" rowspan="2">
         <img src="images/vippng_04.png" width="104" height="506" alt=""></td>
@@ -520,6 +641,15 @@
     <span id="ticker">
       ★ &nbsp;&nbsp; CH UP / CH DOWN TO CHANGE CHANNEL &nbsp;&nbsp; ★ &nbsp;&nbsp; CH 0 — GUIDE &nbsp;&nbsp; ★ &nbsp;&nbsp; CH 2029 — NOW BROADCASTING &nbsp;&nbsp; ★
     </span>
+  </div>
+</div>
+
+<!-- Mobile remote -->
+<div id="mobile-remote">
+  <div id="mobile-ch-display"></div>
+  <div id="mobile-btns">
+    <div class="mobile-btn" id="mobile-ch-up">CH ▲</div>
+    <div class="mobile-btn" id="mobile-ch-down">CH ▼</div>
   </div>
 </div>
 
@@ -908,20 +1038,46 @@ function showChannelBadge(num) {
   badge.addClass('show');
 }
 
+// ── Mobile scaling ────────────────────────────────────────────────
+function updateScale() {
+  var vw = window.innerWidth;
+  var vh = window.innerHeight;
+  var portrait = vw <= 768 && vh > vw;
+  var mobileLandscape = vw <= 1024 && vw > vh && vh <= 600;
+
+  if (portrait) {
+    var s = vw / 649;
+    document.documentElement.style.setProperty('--screen-scale', s);
+    document.getElementById('screen-wrap').style.height = (378 * s) + 'px';
+  } else if (mobileLandscape) {
+    var s2 = Math.min(vw / 649, vh / 378);
+    document.documentElement.style.setProperty('--screen-scale-landscape', s2);
+  } else {
+    document.documentElement.style.setProperty('--screen-scale', 1);
+  }
+}
+
 // ── Controls ──────────────────────────────────────────────────────
 $(document).ready(function () {
+  updateScale();
+  $(window).on('resize orientationchange', updateScale);
+
   channels[currentChannel].enter();
   showChannelBadge(channels[currentChannel].num);
+  $('#mobile-ch-display').text('CH ' + channels[currentChannel].num);
 
   function changeChannel(dir) {
     channels[currentChannel].leave();
     currentChannel = (currentChannel + dir + channels.length) % channels.length;
     channels[currentChannel].enter();
     showChannelBadge(channels[currentChannel].num);
+    $('#mobile-ch-display').text('CH ' + channels[currentChannel].num);
   }
 
   $('.next').on('click', function () { changeChannel(1); });
   $('.prev').on('click', function () { changeChannel(-1); });
+  $('#mobile-ch-up').on('click', function () { changeChannel(1); });
+  $('#mobile-ch-down').on('click', function () { changeChannel(-1); });
 });
 </script>
 </body>
