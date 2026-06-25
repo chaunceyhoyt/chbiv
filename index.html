@@ -68,12 +68,9 @@
   #tv { max-width: 858px; position: relative; }
 
   #screen-wrap {
-    position: absolute;
-    top: 87px;
-    left: 105px;
+    position: relative;
     width: 649px;
     height: 378px;
-    z-index: 15;
   }
 
   #screen {
@@ -413,46 +410,76 @@
 
   .popup-close:hover { color: #ff8888; }
 
-  /* ── Mobile remote ──────────────────────────────────────────────── */
-  #mobile-remote {
-    display: none;
-  }
+  /* ── Mobile layout ───────────────────────────────────────────────── */
+  #mobile-view { display: none; }
 
   @media (max-width: 768px) and (orientation: portrait) {
-    body {
-      justify-content: flex-start;
-      overflow: hidden;
-    }
+    body { justify-content: flex-start; overflow: hidden; }
+    #tv-wrapper { display: none; }
 
-    #tv-wrapper {
+    #mobile-view {
       display: flex;
       flex-direction: column;
       width: 100vw;
       height: 100vh;
     }
 
-    #tv { display: none; }
-    #ticker-wrap { display: none; }
-
-    #screen-wrap {
+    #mobile-screen-wrap {
       position: relative;
-      top: auto;
-      left: auto;
       width: 100vw;
       height: calc(100vw * 378 / 649);
       flex-shrink: 0;
+      overflow: hidden;
+      background: #000;
     }
 
-    #screen {
+    #mobile-screen {
       width: 649px;
       height: 378px;
       transform-origin: top left;
-      transform: scale(var(--screen-scale, 1));
+      transform: scale(var(--mobile-scale, 1));
+      position: relative;
+      background: #000;
+      overflow: hidden;
     }
 
-    #channel-badge {
-      transform-origin: top right;
-      transform: scale(var(--screen-scale, 1));
+    #mobile-screen::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.10) 2px, rgba(0,0,0,0.10) 4px
+      );
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    #mobile-screen::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.75) 100%);
+      pointer-events: none;
+      z-index: 51;
+    }
+
+    #mobile-channel-badge {
+      position: absolute;
+      top: 10px; right: 14px;
+      color: #fff;
+      font-size: 38px;
+      font-family: 'VT323', monospace;
+      letter-spacing: 3px;
+      text-shadow: -2px 0 rgba(255,0,0,0.9), 2px 0 rgba(0,200,255,0.7);
+      z-index: 60;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #mobile-channel-badge.show {
+      opacity: 1;
+      animation: fadeout 1.8s forwards;
     }
 
     #mobile-remote {
@@ -462,7 +489,7 @@
       justify-content: center;
       flex: 1;
       background: #0d0000;
-      gap: 20px;
+      gap: 24px;
       border-top: 1px solid rgba(255,0,0,0.3);
     }
 
@@ -490,12 +517,13 @@
       color: #ff2200;
       background: #1a0000;
       border: 1px solid rgba(255,0,0,0.5);
-      padding: 14px 32px;
+      padding: 16px 36px;
       cursor: pointer;
       letter-spacing: 3px;
       user-select: none;
       -webkit-user-select: none;
       border-radius: 4px;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .mobile-btn:active {
@@ -506,28 +534,35 @@
   }
 
   @media (max-width: 1024px) and (orientation: landscape) and (max-height: 600px) {
-    body { overflow: hidden; justify-content: center; }
+    body { overflow: hidden; background: #000; }
+    #tv-wrapper { display: none; }
 
-    #tv-wrapper { position: fixed; inset: 0; z-index: 500; background: #000; display: flex; align-items: center; justify-content: center; }
-    #tv { display: none; }
-    #ticker-wrap { display: none; }
-    #mobile-remote { display: none !important; }
+    #mobile-view {
+      display: flex;
+      position: fixed;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
 
-    #screen-wrap {
+    #mobile-screen-wrap {
       position: relative;
-      top: auto;
-      left: auto;
       width: 649px;
       height: 378px;
       transform-origin: center center;
-      transform: scale(var(--screen-scale-landscape, 1));
+      transform: scale(var(--mobile-scale, 1));
     }
 
-    #screen {
+    #mobile-screen {
       width: 649px;
       height: 378px;
-      transform: none;
+      background: #000;
+      overflow: hidden;
+      position: relative;
     }
+
+    #mobile-remote { display: none; }
   }
 
   /* Now playing bar at bottom of guide */
@@ -566,10 +601,6 @@
 <body>
 
 <div id="tv-wrapper">
-  <div id="screen-wrap">
-    <div id="screen"></div>
-    <div id="channel-badge"></div>
-  </div>
   <div id="tv">
   <div id="tv-glow"></div>
   <table id="Table_01" width="858" height="723" border="0" cellpadding="0" cellspacing="0">
@@ -581,7 +612,10 @@
       <td rowspan="6">
         <img src="images/vippng_02.png" width="105" height="635" alt=""></td>
       <td colspan="2">
-        <img src="images/spacer.gif" width="649" height="378" alt="">
+        <div id="screen-wrap">
+          <div id="screen"></div>
+          <div id="channel-badge"></div>
+        </div>
       </td>
       <td colspan="5" rowspan="2">
         <img src="images/vippng_04.png" width="104" height="506" alt=""></td>
@@ -644,12 +678,18 @@
   </div>
 </div>
 
-<!-- Mobile remote -->
-<div id="mobile-remote">
-  <div id="mobile-ch-display"></div>
-  <div id="mobile-btns">
-    <div class="mobile-btn" id="mobile-ch-up">CH ▲</div>
-    <div class="mobile-btn" id="mobile-ch-down">CH ▼</div>
+<!-- Mobile layout (hidden on desktop) -->
+<div id="mobile-view">
+  <div id="mobile-screen-wrap">
+    <div id="mobile-screen"></div>
+    <div id="mobile-channel-badge"></div>
+  </div>
+  <div id="mobile-remote">
+    <div id="mobile-ch-display">CH 2029</div>
+    <div id="mobile-btns">
+      <div class="mobile-btn" id="mobile-ch-up">CH ▲</div>
+      <div class="mobile-btn" id="mobile-ch-down">CH ▼</div>
+    </div>
   </div>
 </div>
 
@@ -707,6 +747,25 @@ var weeklySchedule = [
   { title: 'SUNDAY NIGHT BROADCAST', dow: 0, h: 20, m: 0,  dur: 120 }
 ];
 
+// ── Mobile helpers ────────────────────────────────────────────────
+function isMobile() {
+  return window.innerWidth <= 768;
+}
+function $S() {
+  return isMobile() ? $('#mobile-screen') : $('#screen');
+}
+function updateMobileScale() {
+  var vw = window.innerWidth;
+  var vh = window.innerHeight;
+  var portrait = vw <= 768 && vh > vw;
+  var landscape = vw <= 1024 && vw > vh && vh <= 600;
+  if (portrait) {
+    document.documentElement.style.setProperty('--mobile-scale', vw / 649);
+  } else if (landscape) {
+    document.documentElement.style.setProperty('--mobile-scale', Math.min(vw / 649, vh / 378));
+  }
+}
+
 var PX_PER_MIN = 4; // 5min = 20px, 30min = 120px, 1hr = 240px
 var DAY_NAMES  = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
 var HOURS      = ['12AM','1AM','2AM','3AM','4AM','5AM','6AM','7AM','8AM','9AM','10AM','11AM',
@@ -733,7 +792,7 @@ var player;
 var videoId = 'ExF3Azfa4sc'; // placeholder — swap when schedule is live
 
 function enterContent() {
-  $('#screen').html('<div id="video-placeholder"></div>');
+  $S().html('<div id="video-placeholder"></div>');
   createPlayer();
 }
 
@@ -831,7 +890,7 @@ function enterGuide() {
   html += '</div>';
 
   html += '</div>'; // end guide
-  $('#screen').html(html);
+  $S().html(html);
 
   renderGuideDay(guideSelectedDay);
   bindGuideEvents();
@@ -839,7 +898,7 @@ function enterGuide() {
 
 function leaveGuide() {
   closePopup();
-  $('#screen').empty();
+  $S().empty();
 }
 
 function renderGuideDay(date) {
@@ -1031,36 +1090,17 @@ function closePopup() {
 
 // ── Channel badge ─────────────────────────────────────────────────
 function showChannelBadge(num) {
-  var badge = $('#channel-badge');
+  var badge = isMobile() ? $('#mobile-channel-badge') : $('#channel-badge');
   badge.text('CH ' + num);
   badge.removeClass('show');
   void badge[0].offsetWidth;
   badge.addClass('show');
 }
 
-// ── Mobile scaling ────────────────────────────────────────────────
-function updateScale() {
-  var vw = window.innerWidth;
-  var vh = window.innerHeight;
-  var portrait = vw <= 768 && vh > vw;
-  var mobileLandscape = vw <= 1024 && vw > vh && vh <= 600;
-
-  if (portrait) {
-    var s = vw / 649;
-    document.documentElement.style.setProperty('--screen-scale', s);
-    document.getElementById('screen-wrap').style.height = (378 * s) + 'px';
-  } else if (mobileLandscape) {
-    var s2 = Math.min(vw / 649, vh / 378);
-    document.documentElement.style.setProperty('--screen-scale-landscape', s2);
-  } else {
-    document.documentElement.style.setProperty('--screen-scale', 1);
-  }
-}
-
 // ── Controls ──────────────────────────────────────────────────────
 $(document).ready(function () {
-  updateScale();
-  $(window).on('resize orientationchange', updateScale);
+  updateMobileScale();
+  $(window).on('resize orientationchange', updateMobileScale);
 
   channels[currentChannel].enter();
   showChannelBadge(channels[currentChannel].num);
