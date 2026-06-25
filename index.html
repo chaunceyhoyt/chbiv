@@ -487,56 +487,29 @@
 
     /* ── Remote body ── */
     #mobile-remote {
-      flex: 1;
+      height: 140px;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 20px;
       background: #0d0000;
-      padding: 12px 0 8px;
+      border-top: 1px solid rgba(255,0,0,0.15);
     }
-
-    #remote-body {
-      width: 68vw;
-      max-width: 260px;
-      background: linear-gradient(160deg, #222, #111);
-      border-radius: 24px 24px 40px 40px;
-      padding: 16px 20px 24px;
-      box-shadow:
-        0 4px 24px rgba(0,0,0,0.8),
-        inset 0 1px 0 rgba(255,255,255,0.06);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    #remote-top-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    #remote-logo {
-      font-family: 'VT323', monospace;
-      font-size: 13px;
-      color: #555;
-      letter-spacing: 2px;
-    }
-
-    #remote-logo span { color: #ff2200; }
 
     #remote-power {
-      width: 34px;
-      height: 34px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: linear-gradient(145deg, #3a0000, #220000);
+      background: linear-gradient(145deg, #3a0000, #1a0000);
       border: 1px solid rgba(255,0,0,0.4);
       color: #ff2200;
-      font-size: 16px;
+      font-size: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,100,100,0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,100,100,0.1);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
@@ -544,67 +517,38 @@
     #remote-power:active {
       background: linear-gradient(145deg, #550000, #330000);
       box-shadow: 0 1px 4px rgba(0,0,0,0.8);
-    }
-
-    #remote-ch-display {
-      font-family: 'VT323', monospace;
-      font-size: 36px;
-      color: #ff2200;
-      text-align: center;
-      letter-spacing: 4px;
-      text-shadow: 0 0 8px rgba(255,34,0,0.5);
-      background: #0a0000;
-      border: 1px solid #1a0000;
-      border-radius: 6px;
-      padding: 4px 0;
+      transform: scale(0.95);
     }
 
     #remote-ch-row {
       display: flex;
-      gap: 12px;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .remote-ch-btn {
-      flex: 1;
+      width: 70px;
+      height: 44px;
       background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 14px 8px 10px;
+      border: 1px solid #383838;
+      border-radius: 8px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
       cursor: pointer;
       font-family: 'VT323', monospace;
-      color: #ddd;
-      font-size: 22px;
-      box-shadow: 0 4px 0 #0a0a0a, 0 5px 8px rgba(0,0,0,0.5);
+      color: #ccc;
+      font-size: 24px;
+      box-shadow: 0 4px 0 #080808, 0 5px 8px rgba(0,0,0,0.5);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
       line-height: 1;
     }
 
-    .remote-ch-btn span {
-      font-size: 11px;
-      letter-spacing: 1px;
-      color: #666;
-      font-family: sans-serif;
-    }
-
     .remote-ch-btn:active {
-      box-shadow: 0 1px 0 #0a0a0a, 0 2px 4px rgba(0,0,0,0.5);
+      box-shadow: 0 1px 0 #080808;
       transform: translateY(3px);
-      background: linear-gradient(145deg, #1e1e1e, #141414);
-    }
-
-    #remote-grip {
-      height: 8px;
-      background: repeating-linear-gradient(
-        90deg, transparent, transparent 3px,
-        rgba(255,255,255,0.03) 3px, rgba(255,255,255,0.03) 6px
-      );
-      border-radius: 4px;
-      margin-top: 4px;
+      background: linear-gradient(145deg, #1e1e1e, #111);
     }
 
     /* ── About overlay ── */
@@ -817,17 +761,10 @@
     <div id="mobile-channel-badge"></div>
   </div>
   <div id="mobile-remote">
-    <div id="remote-body">
-      <div id="remote-top-row">
-        <div id="remote-logo">CH<span>2029</span></div>
-        <div id="remote-power">⏻</div>
-      </div>
-      <div id="remote-ch-display">CH 2029</div>
-      <div id="remote-ch-row">
-        <div class="remote-ch-btn" id="mobile-ch-up">▲<span>CH UP</span></div>
-        <div class="remote-ch-btn" id="mobile-ch-down">▼<span>CH DOWN</span></div>
-      </div>
-      <div id="remote-grip"></div>
+    <div id="remote-power">⏻</div>
+    <div id="remote-ch-row">
+      <div class="remote-ch-btn" id="mobile-ch-up">▲</div>
+      <div class="remote-ch-btn" id="mobile-ch-down">▼</div>
     </div>
   </div>
 </div>
@@ -917,10 +854,11 @@ function updateMobileScale() {
   if (landscape) {
     scale = Math.min(vw / 649, vh / 378);
     screenH = Math.round(378 * scale);
-    $('#mobile-screen-wrap').css({ height: screenH + 'px', width: '100vw' });
+    $('#mobile-screen-wrap').css({ height: screenH + 'px', width: Math.round(649 * scale) + 'px' });
   } else {
-    var maxH = Math.round(vh * 0.62);
-    scale = Math.min(vw / 649, maxH / 378);
+    var remoteH = 140;
+    var availH = vh - remoteH;
+    scale = Math.min(vw / 649, availH / 378);
     screenH = Math.round(378 * scale);
     $('#mobile-screen-wrap').css('height', screenH + 'px');
   }
