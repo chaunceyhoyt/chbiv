@@ -412,64 +412,111 @@
   .popup-close:hover { color: #ff8888; }
 
   /* ── Mobile layout ───────────────────────────────────────────────── */
-  #mobile-view { display: none; }
-  #about-overlay { display: none; }
+  #mobile-portrait { display: none; }
+  #mobile-landscape { display: none; }
 
   @media (max-width: 768px) {
-    body { justify-content: flex-start; overflow: hidden; }
+    body { overflow: hidden; }
     #tv-wrapper { display: none; }
 
-    #mobile-view {
+    /* ── Portrait: guide + about ── */
+    #mobile-portrait {
       display: flex;
       flex-direction: column;
       width: 100vw;
       height: 100dvh;
+      position: fixed;
+      inset: 0;
     }
 
-    /* ── Screen ── */
-    #mobile-screen-wrap {
-      position: relative;
-      width: 100vw;
+    #mob-guide-wrap {
       flex-shrink: 0;
       overflow: hidden;
-      background: #000;
-      box-shadow: 0 0 18px 4px rgba(255,0,0,0.4);
+      background: #000820;
     }
 
-    #mobile-screen {
+    #mob-guide {
       width: 649px;
       height: 378px;
       transform-origin: top left;
-      transform: scale(var(--mobile-scale, 1));
+      transform: scale(var(--mob-guide-scale, 1));
+      overflow: hidden;
+    }
+
+    #mob-about {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: #0d0000;
+      padding: 20px 28px;
+      border-top: 1px solid rgba(255,0,0,0.25);
+    }
+
+    #mob-rotate-hint {
+      font-family: 'VT323', monospace;
+      font-size: 28px;
+      color: #ff2200;
+      letter-spacing: 4px;
+      text-shadow: -1px 0 rgba(0,200,255,0.4), 1px 0 rgba(255,0,0,0.4);
+      text-align: center;
+    }
+
+    #mob-about-body {
+      font-family: sans-serif;
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+      line-height: 1.5;
+      max-width: 260px;
+    }
+
+    #mob-about-links {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #mob-about-links a {
+      font-family: 'VT323', monospace;
+      font-size: 15px;
+      color: #444;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    /* ── Landscape: fullscreen video ── */
+    #mobile-landscape {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #mob-video-wrap {
       position: relative;
+      width: 649px;
+      height: 378px;
+      transform-origin: center center;
+      transform: scale(var(--mob-video-scale, 1));
+      overflow: hidden;
+    }
+
+    #mob-video {
+      width: 649px;
+      height: 378px;
       background: #000;
       overflow: hidden;
     }
 
-    #mobile-screen::after {
-      content: '';
+    #mob-channel-badge {
       position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(0,0,0,0.10) 2px, rgba(0,0,0,0.10) 4px
-      );
-      pointer-events: none;
-      z-index: 50;
-    }
-
-    #mobile-screen::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.75) 100%);
-      pointer-events: none;
-      z-index: 51;
-    }
-
-    #mobile-channel-badge {
-      position: absolute;
-      top: 8px; right: 10px;
+      top: 10px; right: 14px;
       color: #fff;
       font-family: 'VT323', monospace;
       font-size: 30px;
@@ -480,166 +527,15 @@
       pointer-events: none;
     }
 
-    #mobile-channel-badge.show {
+    #mob-channel-badge.show {
       opacity: 1;
       animation: fadeout 1.8s forwards;
     }
 
-    /* ── Remote body ── */
-    #mobile-remote {
-      height: 140px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      background: #0d0000;
-      border-top: 1px solid rgba(255,0,0,0.15);
-    }
-
-    #remote-power {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #3a0000, #1a0000);
-      border: 1px solid rgba(255,0,0,0.4);
-      color: #ff2200;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,100,100,0.1);
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-
-    #remote-power:active {
-      background: linear-gradient(145deg, #550000, #330000);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.8);
-      transform: scale(0.95);
-    }
-
-    #remote-ch-row {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .remote-ch-btn {
-      width: 70px;
-      height: 44px;
-      background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-      border: 1px solid #383838;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-family: 'VT323', monospace;
-      color: #ccc;
-      font-size: 24px;
-      box-shadow: 0 4px 0 #080808, 0 5px 8px rgba(0,0,0,0.5);
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      line-height: 1;
-    }
-
-    .remote-ch-btn:active {
-      box-shadow: 0 1px 0 #080808;
-      transform: translateY(3px);
-      background: linear-gradient(145deg, #1e1e1e, #111);
-    }
-
-    /* ── About overlay ── */
-    #about-overlay.open {
-      display: flex;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.92);
-      z-index: 300;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #about-panel {
-      width: 80vw;
-      max-width: 300px;
-      background: #0d0000;
-      border: 1px solid rgba(255,0,0,0.3);
-      border-radius: 8px;
-      padding: 24px 20px;
-      font-family: 'VT323', monospace;
-      position: relative;
-    }
-
-    #about-close {
-      position: absolute;
-      top: 10px; right: 14px;
-      color: #ff4444;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    #about-title {
-      color: #ff2200;
-      font-size: 28px;
-      letter-spacing: 4px;
-      text-shadow: -1px 0 rgba(0,200,255,0.5), 1px 0 rgba(255,0,0,0.5);
-      margin-bottom: 10px;
-    }
-
-    #about-divider {
-      height: 1px;
-      background: rgba(255,0,0,0.3);
-      margin-bottom: 12px;
-    }
-
-    #about-body {
-      color: #aaa;
-      line-height: 1.4;
-      margin-bottom: 16px;
-      font-family: sans-serif;
-      font-size: 13px;
-    }
-
-    #about-links {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-
-    #about-links a {
-      color: #6688ff;
-      font-size: 14px;
-      text-decoration: none;
-      font-family: 'VT323', monospace;
-      letter-spacing: 1px;
-    }
-
-    #about-version {
-      color: #333;
-      font-size: 13px;
-      text-align: right;
-      letter-spacing: 2px;
-    }
+    body.mob-landscape #mobile-portrait { display: none; }
+    body.mob-landscape #mobile-landscape { display: flex; }
   }
 
-  @media (max-width: 768px) and (orientation: landscape) {
-    #mobile-view {
-      flex-direction: row;
-    }
-    #mobile-screen-wrap {
-      flex: 1;
-      height: 100dvh;
-      box-shadow: none;
-    }
-    #mobile-screen {
-      transform-origin: top left;
-    }
-    #mobile-remote { display: none; }
-  }
 
   /* Now playing bar at bottom of guide */
   #guide-now-bar {
@@ -754,33 +650,26 @@
   </div>
 </div>
 
-<!-- Mobile layout (hidden on desktop) -->
-<div id="mobile-view">
-  <div id="mobile-screen-wrap">
-    <div id="mobile-screen"></div>
-    <div id="mobile-channel-badge"></div>
+<!-- Mobile portrait: guide top, about bottom -->
+<div id="mobile-portrait">
+  <div id="mob-guide-wrap">
+    <div id="mob-guide"></div>
   </div>
-  <div id="mobile-remote">
-    <div id="remote-power">⏻</div>
-    <div id="remote-ch-row">
-      <div class="remote-ch-btn" id="mobile-ch-up">▲</div>
-      <div class="remote-ch-btn" id="mobile-ch-down">▼</div>
+  <div id="mob-about">
+    <div id="mob-rotate-hint">↻ &nbsp;ROTATE TO WATCH</div>
+    <div id="mob-about-body">A broadcast channel. Whatever is on right now is what you watch. No rewinding, no skipping ahead.</div>
+    <div id="mob-about-links">
+      <a href="mailto:studioivproductions@gmail.com">studioivproductions@gmail.com</a>
+      <a href="https://instagram.com/channel2029" target="_blank">@channel2029</a>
     </div>
   </div>
 </div>
 
-<!-- About overlay -->
-<div id="about-overlay">
-  <div id="about-panel">
-    <div id="about-close">✕</div>
-    <div id="about-title">CHANNEL 2029</div>
-    <div id="about-divider"></div>
-    <p id="about-body">A broadcast channel on the web. Whatever is on right now is what you watch. No scrolling, no rewinding, no skipping ahead.</p>
-    <div id="about-links">
-      <a href="mailto:studioivproductions@gmail.com">studioivproductions@gmail.com</a>
-      <a href="https://instagram.com/channel2029" target="_blank">@channel2029</a>
-    </div>
-    <div id="about-version">channel2029.com</div>
+<!-- Mobile landscape: fullscreen video -->
+<div id="mobile-landscape">
+  <div id="mob-video-wrap">
+    <div id="mob-video"></div>
+    <div id="mob-channel-badge"></div>
   </div>
 </div>
 
@@ -843,26 +732,101 @@ function isMobile() {
   return window.innerWidth <= 768;
 }
 function $S() {
-  return isMobile() ? $('#mobile-screen') : $('#screen');
+  return $('#screen');
 }
-function updateMobileScale() {
-  if (!isMobile()) return;
+
+var mobMode = null; // 'portrait' | 'landscape' | null
+
+function getMobOrientation() {
+  return (window.innerWidth > window.innerHeight) ? 'landscape' : 'portrait';
+}
+
+function enterMobPortrait() {
+  if (player) { player.destroy(); player = null; }
+  $('body').removeClass('mob-landscape');
+
   var vw = window.innerWidth;
   var vh = window.innerHeight || document.documentElement.clientHeight;
-  var landscape = vw > vh;
-  var scale, screenH;
-  if (landscape) {
-    scale = Math.min(vw / 649, vh / 378);
-    screenH = Math.round(378 * scale);
-    $('#mobile-screen-wrap').css({ height: screenH + 'px', width: Math.round(649 * scale) + 'px' });
+  // Guide fills top half-ish, scale to width
+  var scale = vw / 649;
+  var guideH = Math.round(378 * scale);
+  document.documentElement.style.setProperty('--mob-guide-scale', scale);
+  $('#mob-guide-wrap').css('height', guideH + 'px');
+
+  // render guide into #mob-guide
+  var today = new Date();
+  guideSelectedDay = today;
+  var html = buildGuideHTML(today);
+  $('#mob-guide').html(html);
+  renderGuideDay(guideSelectedDay);
+  bindGuideEvents();
+}
+
+function enterMobLandscape() {
+  closePopup();
+  $('body').addClass('mob-landscape');
+
+  var vw = window.innerWidth;
+  var vh = window.innerHeight || document.documentElement.clientHeight;
+  var scale = Math.min(vw / 649, vh / 378);
+  document.documentElement.style.setProperty('--mob-video-scale', scale);
+
+  $('#mob-video').html('<div id="video-placeholder"></div>');
+  createPlayer();
+}
+
+function handleMobOrientation() {
+  if (!isMobile()) return;
+  var orient = getMobOrientation();
+  if (orient === mobMode) return;
+  mobMode = orient;
+  if (orient === 'portrait') {
+    enterMobPortrait();
   } else {
-    var remoteH = 140;
-    var availH = vh - remoteH;
-    scale = Math.min(vw / 649, availH / 378);
-    screenH = Math.round(378 * scale);
-    $('#mobile-screen-wrap').css('height', screenH + 'px');
+    enterMobLandscape();
   }
-  document.documentElement.style.setProperty('--mobile-scale', scale);
+}
+
+// Shared guide HTML builder (used by both desktop enterGuide and mobile portrait)
+function buildGuideHTML(today) {
+  var html = '<div id="guide">';
+  html += '<div id="guide-header">';
+  html += '<span id="guide-title">GUIDE</span>';
+  html += '<div id="guide-day-picker">';
+  var days = getWeekDays();
+  days.forEach(function(d) {
+    var isToday = d.toDateString() === today.toDateString();
+    html += '<span class="guide-day' + (isToday ? ' active' : '') + '" data-date="' + d.toISOString() + '">' + DAY_NAMES[d.getDay()] + '</span>';
+  });
+  html += '</div>';
+  html += '<select id="guide-hour-jump">';
+  HOURS.forEach(function(label, i) {
+    html += '<option value="' + i + '">' + label + '</option>';
+  });
+  html += '</select>';
+  html += '</div>';
+  html += '<div id="guide-grid-wrap">';
+  html += '<div id="guide-channel-col">';
+  html += '<div id="guide-ch-spacer"></div>';
+  html += '<div id="guide-ch-name">CHANNEL<br>2029</div>';
+  html += '</div>';
+  html += '<div id="guide-scroll-area"><div id="guide-timeline">';
+  html += '<div id="guide-time-header"></div>';
+  html += '<div id="guide-programs"><div id="now-line"></div></div>';
+  html += '</div></div>';
+  html += '</div>';
+  html += '<div id="guide-now-bar">';
+  html += '<span id="guide-now-label">&#9654; NOW</span>';
+  html += '<span id="guide-now-title">&#8212;</span>';
+  html += '<span id="guide-now-time"></span>';
+  html += '</div>';
+  html += '</div>';
+  return html;
+}
+
+// createPlayer needs to target correct container
+function getMobVideoContainer() {
+  return isMobile() ? 'video-placeholder' : 'video-placeholder';
 }
 
 var PX_PER_MIN = 4; // 5min = 20px, 30min = 120px, 1hr = 240px
@@ -953,44 +917,7 @@ function blockKey(block, dateStr) {
 function enterGuide() {
   var today = new Date();
   guideSelectedDay = today;
-
-  var html = '<div id="guide">';
-  html += '<div id="guide-header">';
-  html += '<span id="guide-title">GUIDE</span>';
-  html += '<div id="guide-day-picker">';
-  var days = getWeekDays();
-  days.forEach(function(d) {
-    var isToday = d.toDateString() === today.toDateString();
-    html += '<span class="guide-day' + (isToday ? ' active' : '') + '" data-date="' + d.toISOString() + '">' + DAY_NAMES[d.getDay()] + '</span>';
-  });
-  html += '</div>';
-  html += '<select id="guide-hour-jump">';
-  HOURS.forEach(function(label, i) {
-    html += '<option value="' + i + '">' + label + '</option>';
-  });
-  html += '</select>';
-  html += '</div>'; // end header
-
-  html += '<div id="guide-grid-wrap">';
-  html += '<div id="guide-channel-col">';
-  html += '<div id="guide-ch-spacer"></div>';
-  html += '<div id="guide-ch-name">CHANNEL<br>2029</div>';
-  html += '</div>';
-  html += '<div id="guide-scroll-area"><div id="guide-timeline">';
-  html += '<div id="guide-time-header"></div>';
-  html += '<div id="guide-programs"><div id="now-line"></div></div>';
-  html += '</div></div>';
-  html += '</div>'; // end grid-wrap
-
-  html += '<div id="guide-now-bar">';
-  html += '<span id="guide-now-label">▶ NOW</span>';
-  html += '<span id="guide-now-title">—</span>';
-  html += '<span id="guide-now-time"></span>';
-  html += '</div>';
-
-  html += '</div>'; // end guide
-  $S().html(html);
-
+  $S().html(buildGuideHTML(today));
   renderGuideDay(guideSelectedDay);
   bindGuideEvents();
 }
@@ -1189,7 +1116,8 @@ function closePopup() {
 
 // ── Channel badge ─────────────────────────────────────────────────
 function showChannelBadge(num) {
-  var badge = isMobile() ? $('#mobile-channel-badge') : $('#channel-badge');
+  var badge = isMobile() ? $('#mob-channel-badge') : $('#channel-badge');
+  if (!badge.length) return;
   badge.text('CH ' + num);
   badge.removeClass('show');
   void badge[0].offsetWidth;
@@ -1198,32 +1126,25 @@ function showChannelBadge(num) {
 
 // ── Controls ──────────────────────────────────────────────────────
 $(document).ready(function () {
-  updateMobileScale();
-  $(window).on('resize orientationchange', updateMobileScale);
-
-  channels[currentChannel].enter();
-  showChannelBadge(channels[currentChannel].num);
-  $('#mobile-ch-display').text('CH ' + channels[currentChannel].num);
-
-  function changeChannel(dir) {
-    channels[currentChannel].leave();
-    currentChannel = (currentChannel + dir + channels.length) % channels.length;
+  if (isMobile()) {
+    handleMobOrientation();
+    $(window).on('resize orientationchange', function () {
+      setTimeout(handleMobOrientation, 100);
+    });
+  } else {
     channels[currentChannel].enter();
     showChannelBadge(channels[currentChannel].num);
-    $('#mobile-ch-display').text('CH ' + channels[currentChannel].num);
+
+    function changeChannel(dir) {
+      channels[currentChannel].leave();
+      currentChannel = (currentChannel + dir + channels.length) % channels.length;
+      channels[currentChannel].enter();
+      showChannelBadge(channels[currentChannel].num);
+    }
+
+    $('.next').on('click', function () { changeChannel(1); });
+    $('.prev').on('click', function () { changeChannel(-1); });
   }
-
-  $('.next').on('click', function () { changeChannel(1); });
-  $('.prev').on('click', function () { changeChannel(-1); });
-  $('#mobile-ch-up').on('click', function () { changeChannel(1); });
-  $('#mobile-ch-down').on('click', function () { changeChannel(-1); });
-
-  $('#remote-power').on('click', function () {
-    $('#about-overlay').addClass('open');
-  });
-  $('#about-close, #about-overlay').on('click', function (e) {
-    if (e.target === this) $('#about-overlay').removeClass('open');
-  });
 });
 </script>
 </body>
