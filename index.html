@@ -785,24 +785,25 @@ function enterMobPortrait() {
   bindGuideEvents();
 }
 
+function requestMobFullscreen() {
+  var el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen();
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+}
+
 function enterMobLandscape() {
   closePopup();
   $('body').addClass('mob-landscape');
 
-  // Request fullscreen to hide browser chrome
-  var el = document.documentElement;
-  if (el.requestFullscreen) el.requestFullscreen();
-  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  var vw = window.innerWidth;
+  var vh = window.innerHeight;
+  var scale = Math.min(vw / 649, vh / 378);
+  document.documentElement.style.setProperty('--mob-video-scale', scale);
+  $('#mob-video').empty().html('<div id="video-placeholder"></div>');
+  createPlayer();
 
-  // Scale after a tick so fullscreen dims are available
-  setTimeout(function() {
-    var vw = window.innerWidth;
-    var vh = window.innerHeight;
-    var scale = Math.min(vw / 649, vh / 378);
-    document.documentElement.style.setProperty('--mob-video-scale', scale);
-    $('#mob-video').empty().html('<div id="video-placeholder"></div>');
-    createPlayer();
-  }, 80);
+  // Fullscreen requires a user tap — trigger on first touch of the landscape view
+  $('#mobile-landscape').one('touchstart', requestMobFullscreen);
 }
 
 function handleMobOrientation() {
