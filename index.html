@@ -597,6 +597,48 @@
     font-size: 13px;
     flex-shrink: 0;
   }
+  /* ── Off Air ─────────────────────────────────────────────────────── */
+  #off-air-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+  }
+
+  #static-canvas {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    opacity: 0.85;
+  }
+
+  #off-air-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'VT323', monospace;
+    font-size: 72px;
+    color: #fff;
+    letter-spacing: 10px;
+    white-space: nowrap;
+    animation: offAirGlitch 4s infinite;
+    pointer-events: none;
+  }
+
+  @keyframes offAirGlitch {
+    0%   { text-shadow: -3px 0 rgba(255,0,0,0.9), 3px 0 rgba(0,200,255,0.9); opacity: 1; transform: translate(-50%,-50%); }
+    4%   { text-shadow: 4px 0 rgba(255,0,0,0.9), -4px 0 rgba(0,200,255,0.9); opacity: 0.85; transform: translate(calc(-50% + 3px),-50%); }
+    8%   { text-shadow: -3px 0 rgba(255,0,0,0.9), 3px 0 rgba(0,200,255,0.9); opacity: 1; transform: translate(-50%,-50%); }
+    45%  { text-shadow: -2px 2px rgba(255,0,100,0.7), 2px -2px rgba(0,255,180,0.7); opacity: 0.95; }
+    50%  { text-shadow: -5px 0 rgba(255,0,0,0.6), 5px 0 rgba(0,200,255,0.6); opacity: 0.9; transform: translate(-50%, calc(-50% + 2px)); }
+    55%  { text-shadow: -3px 0 rgba(255,0,0,0.9), 3px 0 rgba(0,200,255,0.9); opacity: 1; transform: translate(-50%,-50%); }
+    88%  { opacity: 1; }
+    90%  { opacity: 0.3; transform: translate(calc(-50% - 2px), -50%); }
+    92%  { opacity: 1; transform: translate(-50%,-50%); }
+    100% { text-shadow: -3px 0 rgba(255,0,0,0.9), 3px 0 rgba(0,200,255,0.9); opacity: 1; }
+  }
 </style>
 </head>
 <body>
@@ -811,8 +853,14 @@ function enterMobLandscape() {
   var vh = window.innerHeight;
   var scale = Math.min(vw / 649, vh / 378);
   document.documentElement.style.setProperty('--mob-video-scale', scale);
-  $('#mob-video').empty().html('<div id="video-placeholder"></div>');
-  createPlayer();
+  if (getCurrentProgram()) {
+    stopStatic();
+    $('#mob-video').empty().html('<div id="video-placeholder"></div>');
+    createPlayer();
+  } else {
+    if (player) { player.destroy(); player = null; }
+    showOffAir($('#mob-video'));
+  }
 
   // Fullscreen requires a user tap — trigger on first touch of the landscape view
   $('#mobile-landscape').one('touchstart', requestMobFullscreen);
@@ -877,6 +925,50 @@ var DAY_NAMES  = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
 var HOURS      = ['12AM','1AM','2AM','3AM','4AM','5AM','6AM','7AM','8AM','9AM','10AM','11AM',
                   '12PM','1PM','2PM','3PM','4PM','5PM','6PM','7PM','8PM','9PM','10PM','11PM'];
 
+// ── Off air helpers ──────────────────────────────────────────────
+var staticRafId = null;
+
+function getCurrentProgram() {
+  var now = new Date();
+  var dow = now.getDay();
+  var nowMin = now.getHours() * 60 + now.getMinutes();
+  var found = null;
+  weeklySchedule.forEach(function(s) {
+    if (s.dow === dow) {
+      var start = s.h * 60 + s.m;
+      if (nowMin >= start && nowMin < start + s.dur) found = s;
+    }
+  });
+  return found;
+}
+
+function stopStatic() {
+  if (staticRafId) { cancelAnimationFrame(staticRafId); staticRafId = null; }
+}
+
+function showOffAir(container) {
+  stopStatic();
+  container.html(
+    '<div id="off-air-wrap">' +
+    '<canvas id="static-canvas" width="160" height="90"></canvas>' +
+    '<div id="off-air-text">OFF AIR</div>' +
+    '</div>'
+  );
+  var canvas = document.getElementById('static-canvas');
+  var ctx = canvas.getContext('2d');
+  function drawFrame() {
+    var img = ctx.createImageData(160, 90);
+    var d = img.data;
+    for (var i = 0; i < d.length; i += 4) {
+      var v = (Math.random() * 255) | 0;
+      d[i] = v; d[i+1] = v; d[i+2] = v; d[i+3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    staticRafId = requestAnimationFrame(drawFrame);
+  }
+  drawFrame();
+}
+
 // ── Channel system ────────────────────────────────────────────────
 var currentChannel = 0; // 0 = content (CH 2029), 1 = guide (CH 0)
 
@@ -898,12 +990,19 @@ var player;
 var videoId = 'ExF3Azfa4sc'; // placeholder — swap when schedule is live
 
 function enterContent() {
-  $S().html('<div id="video-placeholder"></div>');
-  createPlayer();
+  if (getCurrentProgram()) {
+    stopStatic();
+    $S().html('<div id="video-placeholder"></div>');
+    createPlayer();
+  } else {
+    if (player) { player.destroy(); player = null; }
+    showOffAir($S());
+  }
 }
 
 function leaveContent() {
   if (player) { player.destroy(); player = null; }
+  stopStatic();
 }
 
 function createPlayer() {
