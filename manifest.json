@@ -1,0 +1,17 @@
+{
+  "name": "Channel 2029",
+  "short_name": "CH 2029",
+  "description": "Something is broadcasting on Channel 2029. Tune in.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d0000",
+  "theme_color": "#0d0000",
+  "icons": [
+    {
+      "src": "/images/preview.png",
+      "sizes": "1200x630",
+      "type": "image/png"
+    }
+  ]
+}
