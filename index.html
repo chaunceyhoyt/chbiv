@@ -451,47 +451,54 @@
     #mob-about {
       flex: 1;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      justify-content: center;
-      gap: 16px;
+      justify-content: space-between;
+      gap: 12px;
       background: #0d0000;
-      padding: 20px 28px;
+      padding: 10px 20px;
       border-top: 1px solid rgba(255,0,0,0.25);
     }
 
     #mob-rotate-hint {
       font-family: 'VT323', monospace;
-      font-size: 28px;
+      font-size: 22px;
       color: #ff2200;
-      letter-spacing: 4px;
+      letter-spacing: 3px;
       text-shadow: -1px 0 rgba(0,200,255,0.4), 1px 0 rgba(255,0,0,0.4);
-      text-align: center;
+      flex-shrink: 0;
     }
 
     #mob-about-body {
-      font-family: sans-serif;
-      font-size: 13px;
-      color: #666;
-      text-align: center;
-      line-height: 1.5;
-      max-width: 260px;
+      display: none;
     }
 
     #mob-about-links {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 6px;
+      align-items: flex-end;
+      gap: 4px;
     }
 
     #mob-about-links a {
       font-family: 'VT323', monospace;
-      font-size: 15px;
+      font-size: 14px;
       color: #444;
       text-decoration: none;
       letter-spacing: 1px;
     }
+
+    /* ── Guide font size overrides for mobile (more room at 75vh) ── */
+    #mob-guide #guide-title    { font-size: 24px; }
+    #mob-guide .guide-day      { font-size: 20px; padding: 2px 7px; }
+    #mob-guide #guide-hour-jump { font-size: 20px; }
+    #mob-guide .time-label     { font-size: 18px; }
+    #mob-guide .program-title  { font-size: 20px; }
+    #mob-guide .program-time-label { font-size: 17px; }
+    #mob-guide #guide-now-label { font-size: 18px; }
+    #mob-guide #guide-now-title { font-size: 19px; }
+    #mob-guide #guide-now-time  { font-size: 17px; }
+    #mob-guide #guide-ch-name   { font-size: 19px; }
 
     /* ── Landscape: fullscreen video ── */
     #mobile-landscape {
@@ -770,12 +777,13 @@ function enterMobPortrait() {
     else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
   }
 
-  // Use the smaller dimension so rotation doesn't affect scale
-  var vw = Math.min(screen.width, screen.height);
-  var scale = window.innerWidth / 649;
-  var guideH = Math.round(378 * scale);
+  var vw = window.innerWidth;
+  var vh = window.innerHeight || document.documentElement.clientHeight;
+  // Guide takes 75% of viewport height
+  var guideH = Math.round(vh * 0.75);
+  var scale = Math.min(vw / 649, guideH / 378);
   document.documentElement.style.setProperty('--mob-guide-scale', scale);
-  $('#mob-guide-wrap').css('height', guideH + 'px');
+  $('#mob-guide-wrap').css('height', Math.round(378 * scale) + 'px');
   $('#mob-guide').empty();
 
   var today = new Date();
