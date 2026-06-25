@@ -536,6 +536,19 @@
     body.mob-landscape #mobile-landscape { display: flex; }
   }
 
+  /* Cover landscape regardless of viewport width breakpoint */
+  body.mob-landscape #tv-wrapper { display: none !important; }
+  body.mob-landscape #mobile-portrait { display: none !important; }
+  body.mob-landscape #mobile-landscape {
+    display: flex !important;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+
 
   /* Now playing bar at bottom of guide */
   #guide-now-bar {
@@ -729,7 +742,7 @@ var weeklySchedule = [
 
 // ── Mobile helpers ────────────────────────────────────────────────
 function isMobile() {
-  return window.innerWidth <= 768;
+  return Math.min(screen.width, screen.height) <= 768;
 }
 function $S() {
   return $('#screen');
@@ -744,20 +757,19 @@ function getMobOrientation() {
 function enterMobPortrait() {
   if (player) { player.destroy(); player = null; }
   $('body').removeClass('mob-landscape');
+  closePopup();
 
-  var vw = window.innerWidth;
-  var vh = window.innerHeight || document.documentElement.clientHeight;
-  // Guide fills top half-ish, scale to width
-  var scale = vw / 649;
+  // Use the smaller dimension so rotation doesn't affect scale
+  var vw = Math.min(screen.width, screen.height);
+  var scale = window.innerWidth / 649;
   var guideH = Math.round(378 * scale);
   document.documentElement.style.setProperty('--mob-guide-scale', scale);
   $('#mob-guide-wrap').css('height', guideH + 'px');
+  $('#mob-guide').empty();
 
-  // render guide into #mob-guide
   var today = new Date();
   guideSelectedDay = today;
-  var html = buildGuideHTML(today);
-  $('#mob-guide').html(html);
+  $('#mob-guide').html(buildGuideHTML(today));
   renderGuideDay(guideSelectedDay);
   bindGuideEvents();
 }
@@ -771,7 +783,7 @@ function enterMobLandscape() {
   var scale = Math.min(vw / 649, vh / 378);
   document.documentElement.style.setProperty('--mob-video-scale', scale);
 
-  $('#mob-video').html('<div id="video-placeholder"></div>');
+  $('#mob-video').empty().html('<div id="video-placeholder"></div>');
   createPlayer();
 }
 
@@ -1050,13 +1062,14 @@ function bindGuideEvents() {
     $('#popup-time').text(time);
     $('#popup-fav').html((isFav ? '★ REMOVE FROM FAVORITES' : '☆ ADD TO FAVORITES'));
 
-    var offset = el.offset();
-    var popW   = 210;
-    var left   = Math.min(offset.left, $(window).width() - popW - 10);
-    var top    = offset.top - 130;
-    if (top < 10) top = offset.top + el.height() + 5;
+    var popW = 260;
+    var popH = 160;
+    var winW = $(window).width();
+    var winH = $(window).height();
+    var left = Math.round((winW - popW) / 2);
+    var top  = Math.round((winH - popH) / 2);
 
-    $('#guide-popup').css({ top: top, left: left }).addClass('open');
+    $('#guide-popup').css({ top: top, left: left, width: popW }).addClass('open');
   });
 
   // Close popup on outside click
